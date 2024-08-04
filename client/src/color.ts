@@ -1,4 +1,4 @@
 export const myColor = {
-    buttonColor:'#714b67',
+    buttonColor:'#265073',
     backgroundColor: '#f6f8ff'
 }

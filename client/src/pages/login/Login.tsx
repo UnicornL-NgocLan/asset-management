@@ -7,7 +7,7 @@ import {myColor} from 'color'
 import {useDispatch} from 'react-redux'
 import logo from 'images/seacorp-logo.png'
 import { getErrorMessage } from 'helpers/getErrorMessage';
-import { login } from '../../redux/reducers/authReducer.tsx';
+import { addAuth } from '../../redux/reducers/authReducer.tsx';
 
 type FieldType = {
   username?: string;
@@ -31,11 +31,10 @@ const Login = () => {
       });
 
       if(data.data.length>0){
-        dispatch(login(data.data[0]))
+        dispatch(addAuth(data.data[0]))
       }
 
     } catch (error:any) {
-      console.log(error);
       alert(getErrorMessage(error))
     } finally {
       setLoading(false);
