@@ -6,11 +6,17 @@ import { IoArrowBackSharp } from "react-icons/io5";
 import GeneralInfo from './GeneralInfo';
 import PageLoading from 'widgets/PageLoading';
 import TransferInfo from './TransferInfo';
+import InventoryInfo from './InventoryInfo';
+import AssetAdjustment from './AssetAdjustment';
+import AssetRepair from './AssetRepair';
 
 const AssetDetail = ({setOpenDetail,id}:{setOpenDetail:(i:boolean)=>void,id:number}) => {
     const [active,setActive] = useState(1);
     const [assetData,setAssetData] = useState<{[key:string]:any}>({});
     const [assetTransferData,setAssetTransferData] = useState<{[key:string]:any}[]>([]);
+    const [assetInventoryData,setAssetInventoryData] = useState<{[key:string]:any}[]>([]);
+    const [assetAdjustmentData,setAssetAdjustmentData] = useState<{[key:string]:any}[]>([]);
+    const [assetRepairData,setAssetRepairData] = useState<{[key:string]:any}[]>([]);
     const [dataFetching,setDataFetching]=  useState(true);
 
     const handleFetchData = async () => {
@@ -18,13 +24,19 @@ const AssetDetail = ({setOpenDetail,id}:{setOpenDetail:(i:boolean)=>void,id:numb
         setDataFetching(true);
         const response = await Promise.all([
         axios.post("/api/get-asset",{id}),
-        axios.post("/api/get-asset-transfer",{id})
+        axios.post("/api/get-asset-transfer",{id}),
+        axios.post("/api/get-asset-inventory",{id}),
+        axios.post("/api/get-asset-adjustment",{id}),
+        axios.post("/api/get-asset-repair",{id})
         ]);
 
         if(response[0].data.data.length===0) return alert("Dữ liệu tài sản không có")
         setAssetData(response[0].data.data[0]);
         setAssetTransferData(response[1].data.data);
-        } catch (error) {
+        setAssetInventoryData(response[2].data.data);
+        setAssetAdjustmentData(response[3].data.data);
+        setAssetRepairData(response[4].data.data);
+        } catch (error) {   
           const message = getErrorMessage(error);
           alert(message);
         } finally {
@@ -46,6 +58,12 @@ const AssetDetail = ({setOpenDetail,id}:{setOpenDetail:(i:boolean)=>void,id:numb
                 return <GeneralInfo data={assetData}/>
             case 2:
                 return <TransferInfo data={assetTransferData}/>
+            case 3:
+                return <InventoryInfo data={assetInventoryData}/>
+            case 4:
+                return <AssetAdjustment data={assetAdjustmentData}/>
+            case 5:
+                return <AssetRepair data={assetRepairData}/>
             default:
                 return <GeneralInfo data={assetData}/>
         }

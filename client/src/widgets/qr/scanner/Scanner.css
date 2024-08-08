@@ -8,8 +8,8 @@
 .qrVideo {
   object-fit: cover;
   border: 1px solid #ddd;
-  width: 350px;
-  height: 350px;
+  width: 300px;
+  height: 300px;
   border-radius: 30px;
 }
 

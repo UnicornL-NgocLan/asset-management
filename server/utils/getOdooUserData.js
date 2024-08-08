@@ -64,6 +64,7 @@ export async function getAssetTransferLines(odoo,id) {
   return new Promise((resolve, reject) => {
       const inParams = [];
       inParams.push([["asset_id","=",id]]); 
+      console.log(inParams)
       inParams.push([
         "id","quantity_demanding","quantity_done","asset_status_transfer","state", "dest_department","asset_management_dept_staff",
         "note","source_location_id","dest_company","dest_department_temporary","dest_location_id","validate_date"
@@ -80,3 +81,66 @@ export async function getAssetTransferLines(odoo,id) {
       });
   });
 }
+
+
+export async function getAssetInventoryLines(odoo,id) {
+  return new Promise((resolve, reject) => {
+      const inParams = [];
+      inParams.push([["asset_id","=",id]]); 
+      inParams.push([
+        "id","quantity_so_sach","quantity_thuc_te","asset_inventory_id","status","da_dan_tem","asset_user_temporary","validated_date","note","de_xuat_xu_ly","giai_trinh","latest_inventory_status"
+      ]); 
+      inParams.push(0); 
+      const params = [];
+      params.push(inParams);
+      odoo.execute_kw("asset.inventory.line", 'search_read', params, (err, assets) => {
+          if (err) {
+          reject(err);
+          } else {
+          resolve(assets);
+          }
+      });
+  });
+}
+
+
+export async function getAssetAdjustmentLines(odoo,id) {
+  return new Promise((resolve, reject) => {
+      const inParams = [];
+      inParams.push([["asset_id","=",id]]); 
+      inParams.push([
+        "id","adjustment_code","increase_quantity","date_adjustment","description","document_ref","vendor_name"
+      ]); 
+      inParams.push(0); 
+      const params = [];
+      params.push(inParams);
+      odoo.execute_kw("account.asset.adjustment", 'search_read', params, (err, assets) => {
+          if (err) {
+          reject(err);
+          } else {
+          resolve(assets);
+          }
+      });
+  });
+}
+
+export async function getAssetRepair(odoo,id) {
+  return new Promise((resolve, reject) => {
+      const inParams = [];
+      inParams.push([["asset_id","=",id]]); 
+      inParams.push([
+        "id","repair_date_start","repair_date_end","repair_party","accident_place","description","quantity"
+      ]); 
+      inParams.push(0); 
+      const params = [];
+      params.push(inParams);
+      odoo.execute_kw("asset.repair.lines", 'search_read', params, (err, assets) => {
+          if (err) {
+          reject(err);
+          } else {
+          resolve(assets);
+          }
+      });
+  });
+}
+
