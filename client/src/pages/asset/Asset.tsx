@@ -7,12 +7,16 @@ import { getErrorMessage } from 'helpers/getErrorMessage'
 import { getCompanies } from '../../redux/reducers/companyReducer'
 import PageLoading from 'widgets/PageLoading.tsx'
 import { addAuth } from '../../redux/reducers/authReducer'
+import AssetList from './components/AssetList'
+import AssetDetail from './components/AssetDetail'
 
-type Props = {}
 
 const Asset = () => {
     const dispatch = useDispatch();
     const [fetchData,setFetchData] = useState(true);
+    const [assetList, setAssetList] = useState<any[]>([]);
+    const [openDetail,setOpenDetail] = useState(false);
+    const [chosenId,setChosenId] = useState(0);
 
     const fetchCompanies = async () => {
         try {
@@ -62,6 +66,11 @@ const Asset = () => {
         }
     }
 
+    const handelChosenAsset = (id:number)=> {
+        setChosenId(id);
+        setOpenDetail(true);
+    }
+
     useEffect(()=>{
         fetchAllNecessaryData();
     },[]);
@@ -71,8 +80,10 @@ const Asset = () => {
     }
 
   return (
-    <div style = {{backgroundColor:myColor.backgroundColor, position:'fixed', height:'100vh',overflow:'auto',width:'100vw'}}>
-        <Header handleChangeCompany={handleChangeCompany}/>
+    <div style = {{backgroundColor:myColor.backgroundColor, height:'100vh',overflow:'auto',width:'100vw'}}>
+        <Header handleChangeCompany={handleChangeCompany} setAssetList={setAssetList} handelChosenAsset={handelChosenAsset}/>
+        <AssetList data={assetList} handelChosenAsset={handelChosenAsset}/>
+        {openDetail && <AssetDetail setOpenDetail = {setOpenDetail} id={chosenId}/>}
     </div>
   )
 }
