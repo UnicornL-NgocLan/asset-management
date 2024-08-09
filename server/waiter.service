@@ -1,0 +1,17 @@
+
+[Unit]
+Description= Waiter App Server
+After=network.target
+
+[Service]
+Type=simple
+User=lanle
+Group=lanle
+Restart=on-failure
+RestartSec=10
+TimeoutSec=1200
+WorkingDirectory=/home/lanle/waiter-app-web-version/server/
+ExecStart=/usr/bin/npm run start
+
+[Install]
+WantedBy=multi-user.target
