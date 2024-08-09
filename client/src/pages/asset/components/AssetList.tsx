@@ -21,7 +21,7 @@ const AssetList = ({data,handelChosenAsset}:{data:any[],handelChosenAsset:(i:num
                 title={<a style={{margin:0, fontSize:14,fontWeight:500}}>{item.label}</a>}
                 />
                 <div>
-                    <p style={{margin:0, fontSize:13}}>{`Địa điểm: ${item.location || ''}`}</p>
+                    <p style={{margin:0, fontSize:13}}>{`Địa điểm: ${item.location &&  item.location[1]}`}</p>
                     <p style={{margin:0, fontSize:13}}>{`Số lượng: ${item.quantity}`}</p>
                     <p style={{margin:0, fontSize:13}}>{`Nguyên giá: ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.total_val)}`}</p>
                 </div>
