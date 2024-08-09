@@ -1,6 +1,6 @@
 
 [Unit]
-Description= Waiter App Server
+Description= Asset App Server
 After=network.target
 
 [Service]
@@ -10,7 +10,7 @@ Group=lanle
 Restart=on-failure
 RestartSec=10
 TimeoutSec=1200
-WorkingDirectory=/home/lanle/waiter-app-web-version/client/
+WorkingDirectory=/home/lanle/asset-management/client/
 ExecStart=/usr/bin/npm run server
 
 [Install]
