@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import type { FormProps } from 'antd';
-import axios from 'axios'
 
 import { Button, Form, Input, Image } from 'antd';
 import {myColor} from 'color'
@@ -8,6 +7,7 @@ import {useDispatch} from 'react-redux'
 import logo from 'images/seacorp-logo.png'
 import { getErrorMessage } from 'helpers/getErrorMessage';
 import { addAuth } from '../../redux/reducers/authReducer.tsx';
+import app from 'axiosConfig.tsx';
 
 type FieldType = {
   username?: string;
@@ -25,7 +25,7 @@ const Login = () => {
       if(loading) return;
       setLoading(true);
 
-      const {data}:any = await axios.post("/api/login",{
+      const {data}:any = await app.post("/api/login",{
         username,
         password
       });

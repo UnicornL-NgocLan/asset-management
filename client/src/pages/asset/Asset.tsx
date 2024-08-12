@@ -2,13 +2,13 @@ import { myColor } from 'color'
 import React, { useEffect, useState } from 'react'
 import Header from './components/Header'
 import { useDispatch } from 'react-redux'
-import axios from 'axios'
 import { getErrorMessage } from 'helpers/getErrorMessage'
 import { getCompanies } from '../../redux/reducers/companyReducer'
 import PageLoading from 'widgets/PageLoading.tsx'
 import { addAuth } from '../../redux/reducers/authReducer'
 import AssetList from './components/AssetList'
 import AssetDetail from './components/AssetDetail'
+import app from 'axiosConfig'
 
 
 const Asset = () => {
@@ -20,7 +20,7 @@ const Asset = () => {
 
     const fetchCompanies = async () => {
         try {
-            const {data} = await axios.get("/api/get-companies");
+            const {data} = await app.get("/api/get-companies");
             if(data?.data){
                 dispatch(getCompanies(data?.data))
             }
@@ -34,7 +34,7 @@ const Asset = () => {
     const handleChangeCompany = async (id:number) => {
         try {
             setFetchData(true);
-            await axios.patch("/api/change-company",{companyId:id})
+            await app.patch("/api/change-company",{companyId:id})
             await fetchAllNecessaryData();
         } catch (error) {
             const message = getErrorMessage(error);
@@ -45,7 +45,7 @@ const Asset = () => {
 
     const handleFetchUserData = async () => {
         try {
-            const {data} = await axios.get("/api/get-user");
+            const {data} = await app.get("/api/get-user");
             dispatch(addAuth(data?.data))
         } catch (error) {
             const message = getErrorMessage(error);

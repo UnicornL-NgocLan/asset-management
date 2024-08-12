@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { myColor } from 'color'
 import { getErrorMessage } from 'helpers/getErrorMessage';
 import React, { useEffect, useState } from 'react'
@@ -9,6 +8,7 @@ import TransferInfo from './TransferInfo';
 import InventoryInfo from './InventoryInfo';
 import AssetAdjustment from './AssetAdjustment';
 import AssetRepair from './AssetRepair';
+import app from 'axiosConfig';
 
 const AssetDetail = ({setOpenDetail,id}:{setOpenDetail:(i:boolean)=>void,id:number}) => {
     const [active,setActive] = useState(1);
@@ -23,11 +23,11 @@ const AssetDetail = ({setOpenDetail,id}:{setOpenDetail:(i:boolean)=>void,id:numb
         try {
         setDataFetching(true);
         const response = await Promise.all([
-        axios.post("/api/get-asset",{id}),
-        axios.post("/api/get-asset-transfer",{id}),
-        axios.post("/api/get-asset-inventory",{id}),
-        axios.post("/api/get-asset-adjustment",{id}),
-        axios.post("/api/get-asset-repair",{id})
+        app.post("/api/get-asset",{id}),
+        app.post("/api/get-asset-transfer",{id}),
+        app.post("/api/get-asset-inventory",{id}),
+        app.post("/api/get-asset-adjustment",{id}),
+        app.post("/api/get-asset-repair",{id})
         ]);
 
         if(response[0].data.data.length===0) return alert("Dữ liệu tài sản không có")

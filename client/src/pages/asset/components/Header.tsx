@@ -12,13 +12,13 @@ import { BsQrCode } from "react-icons/bs";
 
 import type { GetProps } from 'antd';
 import DrawerSelection from './Drawer';
-import axios from 'axios';
 
 import QRScanner from 'widgets/qr/QRScanner';
 import { getErrorMessage } from 'helpers/getErrorMessage';
 import { Select, Spin } from 'antd';
 import type { SelectProps } from 'antd';
 import debounce from 'lodash/debounce';
+import app from 'axiosConfig';
 
 type SearchProps = GetProps<typeof Input.Search>;
 
@@ -64,7 +64,7 @@ const Header = ({handleChangeCompany,setAssetList,handelChosenAsset}:{handleChan
 
     const handleLogout = async () => {
         if(window.confirm("Bạn có muốn đăng xuất?")){
-            await axios.delete("/api/logout")
+            await app.delete("/api/logout")
             dispatch({type:"logout"});
         }
     }
@@ -75,7 +75,7 @@ const Header = ({handleChangeCompany,setAssetList,handelChosenAsset}:{handleChan
 
     const handleGetAssetViaCode = async (code:string)  => {
       try {
-        const {data:{data}} = await axios.post("/api/get-asset",{
+        const {data:{data}} = await app.post("/api/get-asset",{
           text:code,
           isCodeAndName:false,
         })
@@ -110,7 +110,7 @@ const Header = ({handleChangeCompany,setAssetList,handelChosenAsset}:{handleChan
     const handleGetAsset: SearchProps['onSearch'] = async (value) => {
       try {
         if(!value) return setAssetList([])
-        const {data:{data}} = await axios.post("/api/get-asset",{text:value,isCodeAndName:true});
+        const {data:{data}} = await app.post("/api/get-asset",{text:value,isCodeAndName:true});
         const newData = [...data].map((item:any)=> {
           const newItem =  {
             "value":item.id, 
