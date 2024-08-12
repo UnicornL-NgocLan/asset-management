@@ -1,8 +1,6 @@
 {
   "name": "asset-management",
   "version": "0.1.0",
-  "proxy": "http://localhost:5000",
-  "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.4.0",
     "@reduxjs/toolkit": "^2.2.7",
