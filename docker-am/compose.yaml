@@ -3,11 +3,11 @@ services:
     build:
       context: ../client
     environment:
-      - REACT_APP_SERVER_URI=http://localhost:5050/
+      - REACT_APP_SERVER_URI=http://localhost:3030/
     depends_on:
       - server
-    ports:
-      - 3030:3000
+    # ports:
+    #   - 3000:3000
 
   server:
     build:
@@ -20,20 +20,20 @@ services:
       - CRYPTO_KEY=5285029jfkfnwefrrweir3ifw19f3efcs368dsdasae24932k4343ppp
       - IV=5a53oi45de9235nf2y423
       - MONGO_URI=mongodb+srv://lanle:seatek@seatek.g7xiqoq.mongodb.net/?retryWrites=true&w=majority&appName=Seatek
-    ports:
-      - 5050:5000
+    # ports:
+    #   - 5000:5000
 
-  # nginx:
-  #   image: nginx:latest
-  #   restart: always
-  #   container_name: nginx
-  #   volumes:
-  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-  #     - ./nginx/proxy.conf:/etc/nginx/proxy.conf
-  #     - ./nginx/conf.d:/etc/nginx/conf.d
-  #     #- ./nginx/ssl:/etc/ssl
-  #   depends_on:
-  #     - web
-  #     - server
-  #   ports:
-  #     - 3030:3030
+  nginx:
+    image: nginx:latest
+    restart: always
+    container_name: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/proxy.conf:/etc/nginx/proxy.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      #- ./nginx/ssl:/etc/ssl
+    depends_on:
+      - web
+      - server
+    ports:
+      - 3030:3030
