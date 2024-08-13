@@ -20,6 +20,10 @@ app.use(cookieParser(process.env.JWT_SECRET))
 const whitelist = [
   "http://localhost:3000",
   "http://localhost:5000",
+  "http://localhost:3000/",
+  "http://localhost:5000/",
+  "http://localhost:3030",
+  "http://localhost:3030/",
 ];
 
 const isOriginAllowed = (origin) => {
