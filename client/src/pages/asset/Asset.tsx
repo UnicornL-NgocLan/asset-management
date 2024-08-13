@@ -36,6 +36,7 @@ const Asset = () => {
             setFetchData(true);
             await app.patch("/api/change-company",{companyId:id})
             await fetchAllNecessaryData();
+            setAssetList([]);
         } catch (error) {
             const message = getErrorMessage(error);
             alert(message);

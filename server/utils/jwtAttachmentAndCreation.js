@@ -9,7 +9,6 @@ export const attachCookiesToResponse = ({ res, data }) => {
   const accessTokenJWT = createJWT({ payload: data });
 
   const oneHour = 1000 * 60 * 60;
-
   res.cookie('stto', accessTokenJWT, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',

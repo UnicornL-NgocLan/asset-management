@@ -1,5 +1,7 @@
 {
   "name": "asset-management",
+  "proxy":"http://localhost:5000/",
+  "private":true,
   "version": "0.1.0",
   "dependencies": {
     "@ant-design/icons": "^5.4.0",
