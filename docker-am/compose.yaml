@@ -3,7 +3,7 @@ services:
     build:
       context: ../client
     environment:
-      - REACT_APP_SERVER_URI=http://localhost:3030/
+      - REACT_APP_SERVER_URI=http://103.161.22.196:3030/
     depends_on:
       - server
     # ports:
