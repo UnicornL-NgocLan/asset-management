@@ -5,9 +5,9 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { RootState } from 'redux/store';
 import Asset from 'pages/asset/Asset';
 import PrivateRoute from 'PrivateRoute';
-import axios from 'axios';
 import { addAuth } from './redux/reducers/authReducer.tsx';
 import { getErrorMessage } from 'helpers/getErrorMessage';
+import app from 'axiosConfig.tsx';
 
 function App() {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ function App() {
 
   const checkAuth = async () => {
     try {
-      const {data}:any = await axios.get("/api/check-auth");
+      const {data}:any = await app.get("/api/check-auth");
       if(data?.data?.length>0){
         dispatch(addAuth(data.data[0]))
       }
