@@ -24,6 +24,12 @@ const whitelist = [
   "http://localhost:5000/",
   "http://localhost:3030",
   "http://localhost:3030/",
+  "http://103.161.22.196:3030",
+  "http://103.161.22.196:3030/",
+  "http://103.161.22.196:3030",
+  "http://103.161.22.196:3030/",
+  "https://qlts.seateklab.vn",
+  "https://qlts.seateklab.vn/",
 ];
 
 const isOriginAllowed = (origin) => {
