@@ -76,8 +76,7 @@ const Header = ({handleChangeCompany,setAssetList,handelChosenAsset}:{handleChan
     const handleGetAssetViaCode = async (code:string)  => {
       try {
         const {data:{data}} = await app.post("/api/get-asset",{
-          text:code,
-          isCodeAndName:false,
+          id:code
         })
 
         const newData = [...data].map((item:any)=> {
