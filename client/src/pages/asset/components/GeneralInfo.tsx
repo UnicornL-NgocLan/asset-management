@@ -54,7 +54,7 @@ const GeneralInfo = ({data}:{data:{[key:string]:any}}) => {
             <div>
                 <div>
                     <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Số biên bản nghiệm thu:</span> {data.acceptance_number}</p>
-                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày biên bản nghiệm thu:</span> {data.acceptance_date && moment(data.acceptance_date).format("DD-MM-YYYY")}</p>
+                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày biên bản nghiệm thu:</span> {data.acceptance_date && moment(data.acceptance_date).add(7, 'hours').format("DD-MM-YYYY")}</p>
                     <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Mô tả:</span> {data.description}</p>
                     <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Số lượng: </span> {data.quantity}</p>
                     <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Đơn vị đo lường:</span> {data.alt_unit}</p>
@@ -86,10 +86,10 @@ const GeneralInfo = ({data}:{data:{[key:string]:any}}) => {
                 <div>
                     <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Tình trạng ban đầu:</span> {translateState(data.asset_status_start)}</p>
                     <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Tình trạng kiểm kê gần nhất:</span> {translateState(data.latest_inventory_status)}</p>
-                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày điều chuyển gần nhất:</span> {data.latest_asset_transfer_date && moment(data.latest_asset_transfer_date).format("DD-MM-YYYY")}</p>
-                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày nhận tài sản: </span> {data.asset_receive_date && moment(data.asset_receive_date).format("DD-MM-YYYY")}</p>
-                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày thanh lý tài sản:</span> {data.liquidation_date && moment(data.liquidation_date).format("DD-MM-YYYY")}</p>
-                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày sửa chữa:</span> {data.repair_date && moment(data.repair_date).format("DD-MM-YYYY")}</p>
+                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày điều chuyển gần nhất:</span> {data.latest_asset_transfer_date && moment(data.latest_asset_transfer_date).add(7, 'hours').format("DD-MM-YYYY")}</p>
+                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày nhận tài sản: </span> {data.asset_receive_date && moment(data.asset_receive_date).add(7, 'hours').format("DD-MM-YYYY")}</p>
+                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày thanh lý tài sản:</span> {data.liquidation_date && moment(data.liquidation_date).add(7, 'hours').format("DD-MM-YYYY")}</p>
+                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày sửa chữa:</span> {data.repair_date && moment(data.repair_date).add(7, 'hours').format("DD-MM-YYYY")}</p>
                 </div>
             </div>
         </div>

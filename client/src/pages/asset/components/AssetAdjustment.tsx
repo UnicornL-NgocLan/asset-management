@@ -36,7 +36,7 @@ const AssetAdjustment = ({data}:{data:{[key:string]:any}[]}) => {
             data.sort((a,b)=> b.id - a.id).map((item)=> {
                 return <div key={item.id} style={{background:'white',padding:'0.5rem 1rem', marginBottom:16, borderRadius:5,boxShadow:'2px 2px 2px rgba(0,0,0,0.2)'}}>
                     <div>
-                        <h4 style={{margin:0,fontWeight:500, fontSize:13}}>{item.date_adjustment && moment(item.date_adjustment).format("DD-MM-YYYY")} {item.adjustment_code && `(${item.adjustment_code})`}</h4>
+                        <h4 style={{margin:0,fontWeight:500, fontSize:13}}>{item.date_adjustment && moment(item.date_adjustment).add(7, 'hours').format("DD-MM-YYYY")} {item.adjustment_code && `(${item.adjustment_code})`}</h4>
                         <hr/>
                         <div>
                             <p style={{fontSize:12,margin:'0.5rem 0',display:'flex',alignItems:'center'}}><span style={{fontWeight:500}}>Số lượng điều chỉnh: </span><img src={item.increase_quantity >= 0 ? increase : decrease} alt="" style={{height:15}}/> {item.increase_quantity < 0 ? item.increase_quantity * -1 : item.increase_quantity}</p>

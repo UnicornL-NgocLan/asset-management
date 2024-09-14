@@ -35,8 +35,8 @@ const AssetRepair = ({data}:{data:{[key:string]:any}[]}) => {
                 return <div key={item.id} style={{background:'white',padding:'0.5rem 1rem', marginBottom:16, borderRadius:5,boxShadow:'2px 2px 2px rgba(0,0,0,0.2)'}}>
                     <div>
                         <div>
-                            <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày bắt đầu: </span> {item.repair_date_start && moment(item.repair_date_start).format("DD-MM-YYYY")}</p>
-                            <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày kết thúc: </span> {item.repair_date_end && moment(item.repair_date_end).format("DD-MM-YYYY")}</p>
+                            <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày bắt đầu: </span> {item.repair_date_start && moment(item.repair_date_start).add(7, 'hours').format("DD-MM-YYYY")}</p>
+                            <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày kết thúc: </span> {item.repair_date_end && moment(item.repair_date_end).add(7, 'hours').format("DD-MM-YYYY")}</p>
                             <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Số lượng: </span> {item.quantity}</p>
                             <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Đơn vị sửa chữa:</span> {item.repair_party}</p>
                             <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Nơi xảy ra sự có:</span> {item.accident_place}</p>

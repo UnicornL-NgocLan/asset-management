@@ -42,7 +42,7 @@ const TransferInfo = ({data}:{data:{[key:string]:any}[]}) => {
                     <hr/>
                     <div>
                         <div>
-                            <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày điều chuyển:</span> {item.validate_date && moment(item.validate_date).format("DD-MM-YYYY")}</p>
+                            <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày điều chuyển:</span> {item.validate_date && moment(item.validate_date).add(7, 'hours').format("DD-MM-YYYY")}</p>
                             <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Hoàn thành:</span> {item.quantity_done}/{item.quantity_demanding}</p>
                             <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Công ty nhận: </span> {item.dest_company && item.dest_company[1]}</p>
                             <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Phòng ban nhận:</span> {item.dest_department && item.dest_department[1]}</p>
