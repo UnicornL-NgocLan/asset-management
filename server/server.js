@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import morgan from "morgan";
 import router from "./routes/index.js";
+import helmet from "helmet";
 
 
 
@@ -15,7 +16,8 @@ const app = express();
 // Put these 2 lines above
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
-app.use(cookieParser(process.env.JWT_SECRET))
+app.use(cookieParser(process.env.JWT_SECRET));
+app.use(helmet());
 
 const whitelist = [
   "http://localhost:3000",
