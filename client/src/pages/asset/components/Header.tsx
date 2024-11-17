@@ -1,26 +1,26 @@
-import { myColor } from 'color'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import {Input } from 'antd';
-import { BsPersonCircle } from "react-icons/bs";
-import {useDispatch, useSelector} from 'react-redux'
-import { RootState } from 'redux/store';
-import { MdLogout } from "react-icons/md";
+import { myColor } from 'color';
+import { useEffect,useState } from 'react';
+import {Input, Form } from 'antd';
 import { FaBuilding } from "react-icons/fa";
+import {useDispatch, useSelector} from 'react-redux';
+import { RootState } from 'redux/store';
+import { GrLogout } from "react-icons/gr";
 import { ICompany } from 'interface';
 import { FaExchangeAlt } from "react-icons/fa";
 import { BsQrCode } from "react-icons/bs";
-
-import type { GetProps } from 'antd';
-import DrawerSelection from './Drawer';
-
+import { GiNotebook } from "react-icons/gi";
+import type { MenuProps } from 'antd';
+import DrawerSelection from './assetDetail/Drawer';
 import QRScanner from 'widgets/qr/QRScanner';
 import { getErrorMessage } from 'helpers/getErrorMessage';
-import { Select, Spin } from 'antd';
+import { Button, Dropdown } from 'antd';
+import { FaCaretDown } from "react-icons/fa";
 import type { SelectProps } from 'antd';
 import debounce from 'lodash/debounce';
 import app from 'axiosConfig';
-
-type SearchProps = GetProps<typeof Input.Search>;
+import _ from 'lodash';
+import {useNavigate} from 'react-router-dom';
+import {setInput} from '../../../redux/reducers/searchInputReducer';
 
 export interface DebounceSelectProps<ValueType = any>
   extends Omit<SelectProps<ValueType | ValueType[]>, 'options' | 'children'> {
@@ -29,15 +29,21 @@ export interface DebounceSelectProps<ValueType = any>
 }
 
 
-const Header = ({handleChangeCompany,setAssetList,handelChosenAsset}:{handleChangeCompany:(i:number)=>void,setAssetList:(i:any[])=>void,handelChosenAsset:(i:number)=> void}) => {
+const Header = ({handleChangeCompany,setAssetList,handelChosenAsset,handleGetAsset}:{
+  handleChangeCompany:(i:number)=>void,
+  setAssetList:(i:any[])=>void,
+  handleGetAsset: (i:string) => void,
+  handelChosenAsset:(i:number)=> void}) => {
     const dispatch = useDispatch();
     const [openDrawer, setOpenDrawer] = useState(false);
     const companies = useSelector((state: RootState) => state.companies);
+    const searchInput = useSelector((state: RootState) => state.searchInput);
+    const navigate = useNavigate()
     const auth = useSelector((state: RootState) => state.auth) as any;
 
     const [myCurrentCompanyShortName,setMyCurrentCompanyShortName] = useState<string>('');
     const [isOpen, setOpen] = useState(false);
-    const [input,setInput] = useState("");
+    const [form] = Form.useForm();
 
 
     const getMyCurrentCompanyShortName = () => {
@@ -73,8 +79,24 @@ const Header = ({handleChangeCompany,setAssetList,handelChosenAsset}:{handleChan
       setOpen(true);
     }
 
+    const items: MenuProps['items'] = [
+      {
+        label: <span style={{fontSize:13}}>Đổi công ty</span>,
+        key: '1',
+        icon: <FaExchangeAlt/>,
+        onClick: () => handleOpenCompanySelection()
+      },
+      {
+        label: <span style={{color:'red',fontSize:13}}>Đăng xuất</span>,
+        key: '2',
+        icon: <GrLogout style={{color:'red'}}/>,
+        onClick: () => handleLogout()
+      },
+    ];
+
     const handleGetAssetViaCode = async (code:string)  => {
       try {
+        if(!_.isInteger(parseInt(code))) return alert("Nội dung mã QR không hợp lệ");
         const {data:{data}} = await app.post("/api/get-asset",{
           id:code
         })
@@ -95,33 +117,13 @@ const Header = ({handleChangeCompany,setAssetList,handelChosenAsset}:{handleChan
           alert("Không tìm thấy tài sản !")
         }{
           setAssetList(newData);
+          setOpen(false);
         }
 
         if(newData.length === 1){
           handelChosenAsset(newData[0].value)
+          setOpen(false);
         }
-      } catch (error) {
-        const message = getErrorMessage(error);
-        alert(message);
-      }
-    }
-
-    const handleGetAsset: SearchProps['onSearch'] = async (value) => {
-      try {
-        if(!value) return setAssetList([])
-        const {data:{data}} = await app.post("/api/get-asset",{text:value,isCodeAndName:true});
-        const newData = [...data].map((item:any)=> {
-          const newItem =  {
-            "value":item.id, 
-            "label": `[${item.code}] ${item.name}`,
-            'location':item.sea_office_id,
-            "quantity": item.quantity,
-            "status":item.state,
-            "total_val":item.value
-          }
-          return newItem;
-        })
-        setAssetList(newData)
       } catch (error) {
         const message = getErrorMessage(error);
         alert(message);
@@ -129,13 +131,21 @@ const Header = ({handleChangeCompany,setAssetList,handelChosenAsset}:{handleChan
     }
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      dispatch(setInput(e.target.value))
       handleGetAsset(e.target.value)
     };
-
 
     useEffect(() => {
       getMyCurrentCompanyShortName();
     }, [auth]);
+    
+    useEffect(() => {
+      if(searchInput){
+        form.setFieldsValue({
+          name: searchInput,
+        });
+      }
+    }, []);
 
   return (
     <>
@@ -143,33 +153,45 @@ const Header = ({handleChangeCompany,setAssetList,handelChosenAsset}:{handleChan
         position:'sticky',top:0, zIndex:1,
         paddingBottom:10,backgroundColor:myColor.buttonColor,width:'100%',borderBottomLeftRadius:20,borderBottomRightRadius:20}}>
           <div style = {{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'1rem'}}>
-              <div style={{display:'flex',alignItems:'center',gap:8}}>
-                  <BsPersonCircle style={{fontSize:20,color:'white'}}/>
-                  <span style={{color:'white',fontSize:14}}>{auth?.name}</span>
+            <div style={{display:'flex',alignItems:'center',gap:5, padding:0}}>
+              <FaBuilding style={{fontSize:13,color:'white'}}/>
+              <span style={{fontSize:11.5, color:'white'}}>{myCurrentCompanyShortName}</span>
+            </div>
+            <Dropdown menu={{ items }} placement="bottomRight" arrow>
+              <div style={{display:'flex',alignItems:'center',gap:2}}>
+                  <span style={{color:'white',fontSize:13}}>{auth?.name}</span>
+                  <FaCaretDown style={{fontSize:14,color:'white'}}/>
               </div>  
-              <div style={{display:'flex',alignItems:'center',gap:20}}>
-                <div
-                  style={{display:'flex',width:'20px',height:'20px',borderRadius:3,background:'white',padding:1.5,overflow:'hidden'}}>
-                    <BsQrCode style={{width:'100%',height:'100%'}}  onClick={openScanQR}/>
-                </div>
-                  {companies.length > 1 && <FaExchangeAlt style={{fontSize:18,color:'white', marginRight:0}} onClick = {handleOpenCompanySelection}/>}
-                  <MdLogout style={{fontSize:20,color:'white'}} onClick={handleLogout}/>
-              </div>
+            </Dropdown>
           </div>
-          <div style={{padding:'0.5rem 1rem'}}>
-              <p style={{color:'white',fontWeight:'500',margin:0}}>QUẢN LÝ TÀI SẢN</p>
-          </div>
-          <div style={{display:'flex',alignItems:'center',padding:'0.5rem 1rem',gap:8}}>
-              <FaBuilding style={{fontSize:16,color:'white'}}/>
-              <span style={{fontSize:14, color:'white'}}>{myCurrentCompanyShortName}</span>
+          
+          <div style={{display:'flex',alignItems:'center',padding:'0 1rem 0.5rem',gap:8}}>
+              <Form
+                form={form}
+                style={{width:"100%"}}
+              >
+                <Form.Item name="name" style={{margin:0}}>
+                  <Input placeholder="Nhập mã tài sản hoặc tên tài sản" allowClear onChange={debounce(onChange,500)}/>
+                </Form.Item>
+              </Form>
           </div>
 
-          <div style={{display:'flex',alignItems:'center',padding:'0.5rem 1rem',gap:8}}>
-              <Input placeholder="Nhập mã tài sản hoặc tên tài sản" allowClear onChange={debounce(onChange,500)}/>
+          <div style={{padding:'0 1rem', display:'flex',justifyContent:'center', gap: 25}}>
+            <Button onClick={()=>navigate("/asset/audit")} style={{padding:'0.25rem',}} type="text">
+              <GiNotebook  style={{color:'white',fontSize:16}}/>
+              <span style={{fontSize:12, color:'white'}}>Kiểm kê tài sản</span>
+            </Button>
+            <Button onClick={openScanQR} style={{padding:'0.25rem'}} type="text">
+              <div
+                style={{display:'flex',width:'17px',height:'17px',borderRadius:3,background:'white',padding:2,overflow:'hidden'}}>
+                  <BsQrCode style={{width:'100%',height:'100%'}}/>
+              </div>
+              <span style={{fontSize:12, color:'white'}}>Quét mã QR</span>
+            </Button>
           </div>
       </div>
       <DrawerSelection open = {openDrawer} handleClose = {handleClose} handleChangeCompany={handleChangeCompany}/>
-      {isOpen && <QRScanner isOpen={isOpen} setOpen={()=>setOpen(false)} setDecodedText = {handleGetAssetViaCode}/>}
+      {isOpen && <QRScanner isOpen={isOpen} setOpen={setOpen} setDecodedText = {handleGetAssetViaCode}/>}
     </>
   )
 }

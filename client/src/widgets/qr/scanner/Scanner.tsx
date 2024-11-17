@@ -1,9 +1,9 @@
 
 import QrScanner from 'qr-scanner';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import './Scanner.css'
 
-const QRScanner = ({setDecodedText,closeModal}:any) => {
+const QRScanner = ({setDecodedText}:any) => {
   const videoElementRef = useRef(null);
 
   useEffect(() => {
@@ -12,7 +12,6 @@ const QRScanner = ({setDecodedText,closeModal}:any) => {
       video,
       (result) => {
         setDecodedText(result.data);
-        closeModal();
       },
       {
         returnDetailedScanResult: true,

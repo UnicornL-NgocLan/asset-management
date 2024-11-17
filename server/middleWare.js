@@ -38,10 +38,10 @@ export const authenticateUser = async (req, res, next) => {
       req.odoo = odoo;
       return next();
     }else{
-      res.status(403).json({error: 'Dữ liệu người dùng không tìm thấy'}); 
+      res.status(403).json({msg: 'Dữ liệu người dùng không tìm thấy'}); 
     }
   }
    catch (err) {
-    res.status(500).json({error: err.message});
+    res.status(500).json({msg: err.message});
   }
 }

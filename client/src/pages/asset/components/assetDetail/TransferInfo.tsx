@@ -1,4 +1,4 @@
-import to from "../../../images/right-arrow.png"
+import to from "../../../../images/right-arrow.png"
 import moment from "moment"
 import Empty from "widgets/Empty"
 
