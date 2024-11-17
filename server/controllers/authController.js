@@ -79,7 +79,7 @@ export const authCtrl = {
             // Tạo hoặc cập nhật dữ liệu user vào MongoDB
             
             const mongoUser = await Users.findOne({username:payload?.username});
-            if(mongoUser){
+            if(mongoUser && mongoUser.password){
                 const decryptedPassword = decrypt(mongoUser?.password);
                 const odoo = new Odoo({ url: process.env.ODOO_URL, db: process.env.ODOO_DB, username: payload.username, password: decryptedPassword});
                 const uid = new Promise((resolve, reject) => {
@@ -96,7 +96,7 @@ export const authCtrl = {
 
                 res.status(200).json({data:user})
             } else{
-                res.status(400).json({error: 'Dữ liệu người dùng không tìm thấy'}); 
+                res.status(400).json({msg: 'Dữ liệu người dùng không tìm thấy'}); 
             }
         } catch (error) {
             console.log(error);

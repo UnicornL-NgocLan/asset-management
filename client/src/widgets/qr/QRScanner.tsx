@@ -10,7 +10,7 @@ const QRScannerFeature = ({isOpen,setOpen,setDecodedText}:{isOpen:boolean,setOpe
     setOpen(false);
   };
 
-  const qrScanner = isOpen ? <QRScanner setDecodedText={setDecodedText} closeModal={closeModal}/> : null;
+  const qrScanner = isOpen ? <QRScanner setDecodedText={setDecodedText}/> : null;
   return (
     <>
       <div className="appContainer">

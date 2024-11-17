@@ -1,6 +1,6 @@
 import moment from 'moment';
-import increase from "../../../images/increase.png"
-import decrease from "../../../images/decrease.png"
+import increase from "../../../../images/increase.png"
+import decrease from "../../../../images/decrease.png"
 import Empty from 'widgets/Empty';
 
 const AssetAdjustment = ({data}:{data:{[key:string]:any}[]}) => {

@@ -1,6 +1,8 @@
 import { myColor } from 'color'
-import location from '../../../images/placeholder.png'
+import location from '../../../../images/placeholder.png'
 import moment from 'moment'
+import _ from 'lodash';
+import Empty from 'widgets/Empty';
 
 const GeneralInfo = ({data}:{data:{[key:string]:any}}) => {
     const translateState = (text:string)=>{
@@ -26,13 +28,15 @@ const GeneralInfo = ({data}:{data:{[key:string]:any}}) => {
         }
     }
 
+    if(_.isEmpty(data)) return <Empty/>
+
   return (
     <div style={{overflow:'auto',padding:'0.25rem 0.25rem 1.5rem'}}>
         <div style={{background:'white',padding:'0.5rem 1rem', borderRadius:5,boxShadow:'2px 2px 2px rgba(0,0,0,0.2)'}}>
             <h4 style={{margin:0,fontWeight:500, fontSize:14, color:myColor.buttonColor}}>Thông tin chung</h4>
             <hr/>
             <div>
-                <h5 style={{fontWeight:500, fontSize:15,margin:'1rem 0 0.5rem'}}>{data.name}</h5>
+                <h5 style={{fontWeight:500, fontSize:14,margin:'1rem 0 0.5rem'}}>{data.name}</h5>
                 <div>
                     <div style={{display:'flex',alignItems:'center',gap:5,marginBottom:'1.5rem'}}>
                         <img src={location} alt="" style={{width:20}}/>

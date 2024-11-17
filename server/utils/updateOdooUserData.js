@@ -5,7 +5,6 @@ export async function hangeChangeUserCompany(odoo, companyId, uid) {
         inParams.push({ company_id: parseInt(companyId) });
         const params = [];
         params.push(inParams);
-        console.log(params);
         odoo.execute_kw("res.users", "write", params, function (err, user) {
             if (err) {
                 reject(err);
