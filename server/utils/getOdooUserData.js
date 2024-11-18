@@ -272,3 +272,24 @@ export async function getAssetInventory (odoo, auditId) {
     });
   });
 }
+
+
+export async function getAssetInventoryLine(odoo,id) {
+  return new Promise((resolve, reject) => {
+      const inParams = [];
+      inParams.push([["id","=",id]]); 
+      inParams.push([
+        "id","asset_id","quantity_so_sach","quantity_thuc_te","asset_inventory_id","status","da_dan_tem","asset_user_temporary","validated_date","note","de_xuat_xu_ly","giai_trinh","latest_inventory_status"
+      ]); 
+      inParams.push(0); 
+      const params = [];
+      params.push(inParams);
+      odoo.execute_kw("asset.inventory.line", 'search_read', params, (err, assets) => {
+          if (err) {
+          reject(err);
+          } else {
+          resolve(assets);
+          }
+      });
+  });
+}

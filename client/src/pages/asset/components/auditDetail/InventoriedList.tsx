@@ -13,7 +13,7 @@ type DataIndex = keyof IAssetInventory;
 
 
 
-const InventoriedList = ({inventoryLines}:{auditData:IAudit | null,inventoryLines:IAssetInventory[]}) => {
+const InventoriedList = ({auditData,inventoryLines}:{auditData:IAudit | null,inventoryLines:IAssetInventory[]}) => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
@@ -165,7 +165,7 @@ const InventoriedList = ({inventoryLines}:{auditData:IAudit | null,inventoryLine
             rowKey={record => record.id} />
         </div>
       }
-    {openEdit && <InventoryLineDetail openEdit = {openEdit} setOpenEdit = {setOpenEdit}/>}
+    {openEdit && auditData && <InventoryLineDetail openEdit = {openEdit} setOpenEdit = {setOpenEdit} auditData = {auditData}/>}
     </>
   )
 }

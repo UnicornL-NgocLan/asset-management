@@ -12,6 +12,7 @@ router.get("/get-departments",authenticateUser,auditCtrl.getDepartments);
 router.get("/get-asset-inventory-commitee/:id",authenticateUser,auditCtrl.getAssetInventoryCommitee);
 router.get("/get-asset-inventoried-dept/:id",authenticateUser,auditCtrl.getAssetInventoriedDept);
 router.get("/get-asset-inventory/:id",authenticateUser,auditCtrl.getAssetInventory);
+router.get("/get-asset-inventory-line/:id",authenticateUser,auditCtrl.getAssetInventoryLine);
 
 
 export default router.stack;

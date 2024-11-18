@@ -5,7 +5,8 @@ import {
     getDepartments,
     getAssetInventoryCommitee,
     getAssetInventoriedDept,
-    getAssetInventory
+    getAssetInventory,
+    getAssetInventoryLine
 } from "../utils/getOdooUserData.js"
 
 
@@ -71,6 +72,16 @@ export const auditCtrl = {
         try {
             const {id} = req.params;
             const data = await getAssetInventory(req.odoo,id);
+            res.status(200).json({data})
+        } catch (error) {
+            res.status(500).json({msg:error.message})
+        }
+    },
+
+    getAssetInventoryLine: async (req,res) => {
+        try {
+            const {id} = req.params;
+            const data = await getAssetInventoryLine(req.odoo,id);
             res.status(200).json({data})
         } catch (error) {
             res.status(500).json({msg:error.message})
