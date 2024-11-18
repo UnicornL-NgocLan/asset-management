@@ -9,6 +9,7 @@ import Info from './Info';
 import InventoriedList from './InventoriedList';
 import { IAssetInventoriedDept, IAssetInventory, IAudit, ICommitee } from 'interface';
 import { BsQrCode } from 'react-icons/bs';
+import QRScanner from 'widgets/qr/QRScanner';
 
 const AuditDetail = () => {
     const {id} = useParams();
@@ -20,7 +21,10 @@ const AuditDetail = () => {
     const [auditData,setAuditData] = useState<IAudit | null>(null);
     const [commitee,setCommitee] = useState<ICommitee[]>([]);
     const [inventoriedDept,setInventoriedDept] = useState<IAssetInventoriedDept[]>([]);
-    const [inventoryLines,setInventoryLines] = useState<IAssetInventory[]>([])
+    const [inventoryLines,setInventoryLines] = useState<IAssetInventory[]>([]);
+    const [isOpen,setOpen] = useState(false);
+
+    const [openEdit,setOpenEdit] = useState<any>(false);
 
     const handleGetAudit = async () => {
         try {
@@ -82,13 +86,31 @@ const AuditDetail = () => {
         }
     }
 
+    const handleOpenQrCode = () => {
+        setOpen(true);
+    }
+
+    const handleOpenInventoryLine = (id:string) => {
+        const inventoriedAsset = [...inventoryLines].find(i => (i.asset_id as any)[0].toString() === id.toString())
+        if(inventoriedAsset){
+            setActive(2);
+            setOpenEdit(inventoriedAsset);
+            setOpen(false);
+        } else {
+            alert("Không tìm thấy tài sản trong danh sách kiểm kê")
+        }
+    }
+
 
     const handleViewContent = () => {
         switch (active){
             case 1:
                 return <Info auditData = {auditData} commitee={commitee} inventoriedDept={inventoriedDept}/>
             case 2:
-                return <InventoriedList auditData = {auditData} inventoryLines={inventoryLines}/>
+                return <InventoriedList 
+                refetchAssetInventoryLines = {handleGetAssetInventoryLines}
+                auditData = {auditData} inventoryLines={inventoryLines} 
+                setOpenEdit={setOpenEdit} openEdit={openEdit}/>
             default:
                 return <></>
         }
@@ -120,7 +142,7 @@ const AuditDetail = () => {
                     <IoArrowBackSharp style={{margin:0, fontSize:20,color:'white'}} onClick={()=>navigate("/asset/audit",{ replace: true })}/>
                 </div>
                 <h5 style={{margin:0, fontSize:14,color:'white',fontWeight:500}}>Thông tin chi tiết</h5>
-                {inventoryLines.length > 0 && <div style={{display:'flex',justifyContent:'flex-start',position:'absolute',right:20}}>
+                {inventoryLines.length > 0 && <div style={{display:'flex',justifyContent:'flex-start',position:'absolute',right:20}} onClick={handleOpenQrCode}>
                     <BsQrCode style={{margin:0, fontSize:20,color:'white'}}/>
                 </div>}
             </header>
@@ -142,6 +164,7 @@ const AuditDetail = () => {
         <div style={{padding:'0.5rem 0rem',background:myColor.backgroundColor, overflow:'auto'}}>
         {handleViewContent()}
         </div>
+        {isOpen && <QRScanner isOpen={isOpen} setOpen={setOpen} setDecodedText = {handleOpenInventoryLine}/>}
     </div>
   )
 }

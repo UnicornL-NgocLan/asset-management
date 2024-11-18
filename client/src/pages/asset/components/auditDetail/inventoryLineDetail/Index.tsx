@@ -1,17 +1,27 @@
-import { Card, Flex, Form, Input, Radio } from 'antd';
+import { Button, Form, Radio, Select } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import app from 'axiosConfig';
 import { myColor } from 'color'
 import { getErrorMessage } from 'helpers/getErrorMessage';
 import { IAudit } from 'interface'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { IoArrowBackSharp } from 'react-icons/io5'
 import PageLoading from 'widgets/PageLoading';
+import { InputNumber } from 'antd';
+import Empty from 'widgets/Empty';
+import _ from 'lodash';
 
-const InventoryLineDetail = ({openEdit,setOpenEdit,auditData}:{openEdit:any,setOpenEdit:(i:boolean)=>void,auditData:IAudit}) => {
+const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,auditData}:{handleRefetchInventoryList:()=>void,openEdit:any,setOpenEdit:(i:boolean)=>void,auditData:IAudit}) => {
   const [form] = Form.useForm();
   const [inventoryLine,setInventoryLine] = useState<any>(null) 
   const [loading,setLoading] = useState(true);
+  const [status,setStatus] = useState('');
+  const [state,setState] = useState('');
+  const [hasStamp,setHasStamp] = useState(true);
+  const [employee,setEmployee] = useState<{id:number,name:string}[]>([]);
+  const [assetUser,setAssetUser] = useState('');
+  const [canEdit,setCanEdit] = useState(true);
+  const [isUpdating,setIsUpdating] = useState(false);
 
 
   const handleGetInventoryLine = async () => {
@@ -21,7 +31,36 @@ const InventoryLineDetail = ({openEdit,setOpenEdit,auditData}:{openEdit:any,setO
       if(data.length > 0){
         setInventoryLine(data[0]);
       }
-  } catch (error) {
+    } catch (error) {
+        const message = getErrorMessage(error);
+        alert(message);
+    } finally {
+        setLoading(false);
+    }
+  }
+
+  const handleGetEmployeeTemporary = async () => {
+    try {
+      setLoading(true);
+      const {data:{data}} = await app.get(`/api/get-employee-temporary`);
+      if(data.length > 0){
+        setEmployee(data);
+      }
+    } catch (error) {
+        const message = getErrorMessage(error);
+        alert(message);
+    } finally {
+        setLoading(false);
+    }
+  }
+
+  const handleGetData = async () => {
+    try {
+      await Promise.all([
+        handleGetEmployeeTemporary(),
+        handleGetInventoryLine()
+      ])
+    } catch (error) {
       const message = getErrorMessage(error);
       alert(message);
   } finally {
@@ -29,30 +68,63 @@ const InventoryLineDetail = ({openEdit,setOpenEdit,auditData}:{openEdit:any,setO
   }
   }
 
-  const onFinish = () => {
+  const onFinish = async () => {
+    try {
+      setIsUpdating(true)
+      const {tt,note,dxxl,gtdv} = form.getFieldsValue(["tt","note","dxxl","gtdv"]);
+      if(!tt && tt !== 0) return alert("Vui lòng nhập só lượng thực tế");
+      if(!_.isNumber(tt)) return alert("Trường số thực tế phải là kiểu số");
+      if(tt < 0) return alert("Số thực tế phải lớn hơn 0")
+
+      const updateData = {
+        quantity_thuc_te:tt,
+        note,
+        de_xuat_xu_ly:dxxl,
+        giai_trinh:gtdv,
+        status:state,
+        latest_inventory_status:status,
+        quantity_chenh_lech:inventoryLine.quantity_so_sach - inventoryLine.quantity_thuc_te,
+        da_dan_tem:hasStamp
+      }
+
+      await app.patch(`/api/update-inventory-line/${openEdit.id}`,updateData);
+      handleRefetchInventoryList()
+    } catch (error) {
+      console.log(error)
+      const message = getErrorMessage(error);
+      alert(message);
+    } finally {
+      setIsUpdating(false);
+    }
 
   }
 
-  const options = [
-    { label: 'Đang sử dụng', value: 'dang_su_dung' },
-    { label: 'Hư hỏng', value: 'hu_hong' },
-  ];
-
   useEffect(()=>{
     if(!inventoryLine) return;
-    const {quantity_thuc_te,note,de_xuat_xu_ly,giai_trinh,status} = inventoryLine;
+    const {quantity_thuc_te,note,de_xuat_xu_ly,giai_trinh,latest_inventory_status,status:thuc_trang,da_dan_tem,asset_user_temporary} = inventoryLine;
         form.setFieldValue("tt",quantity_thuc_te);
-        form.setFieldValue("npte",note ? note : '');
-        form.setFieldValue("dxxy",de_xuat_xu_ly ? de_xuat_xu_ly : '');
+        form.setFieldValue("note",note ? note : '');
+        form.setFieldValue("dxxl",de_xuat_xu_ly ? de_xuat_xu_ly : '');
         form.setFieldValue("gtdv",giai_trinh ? giai_trinh : '');
-        form.setFieldValue("state",status);
+        setState(thuc_trang)
+        setStatus(latest_inventory_status);
+        setHasStamp(da_dan_tem);
+        setAssetUser(asset_user_temporary ? asset_user_temporary[1] : '')
   },[inventoryLine]);
 
+  useEffect(()=>{
+    if(!['draft','process'].some(i => i === auditData.state)){
+      setCanEdit(false)
+    }
+  },[])
+
   useEffect(() => {
-    handleGetInventoryLine()
+    handleGetData()
   }, []);
 
-  if(loading || !inventoryLine) return <PageLoading/>
+  if(loading) return <PageLoading/>
+
+  if(!loading && !inventoryLine) return <div style={{padding:'1rem 0'}}><Empty/></div>
 
   return (
     <div style={{position:'fixed',top:0,width:'100vw', overflow:'auto',height:'100vh',zIndex:100,background:myColor.backgroundColor}}>
@@ -70,6 +142,7 @@ const InventoryLineDetail = ({openEdit,setOpenEdit,auditData}:{openEdit:any,setO
             form = {form}
             name="layout-multiple-vertical"
             layout="vertical"
+            disabled = {!canEdit}
             labelCol={{ span: 4 }}
             onFinish={onFinish}
             wrapperCol={{ span: 20 }}
@@ -89,26 +162,54 @@ const InventoryLineDetail = ({openEdit,setOpenEdit,auditData}:{openEdit:any,setO
                         className='m-0'
                         style={{margin:0}}
                 >
-                    <Input placeholder="Số lượng thực tế" size="middle" style={{fontSize:13,background:myColor.backgroundColor}}/>
+                    <InputNumber min={0} placeholder="Số lượng thực tế" size="middle" style={{fontSize:13,background:myColor.backgroundColor,width:'100%'}}/>
                 </Form.Item>
               </div>
               <div style={{paddingBottom:10}}>
                 <p style={{margin:0,fontSize:13,fontWeight:600,marginBottom:8}}>Thực trạng</p>   
-                <Form.Item
-                        className='m-0'
-                        style={{margin:0}}
-                >
-                  <Flex vertical gap="middle">
-                    <Radio.Group
-                      options={options}
-                      size = "middle"
-                      optionType="button"
-                      buttonStyle="solid"
-                      name = "state"
-                      block = {true}
-                    />
-                  </Flex>
-                </Form.Item>
+                <Select
+                  style={{ width: '100%'}}
+                  value = {state}
+                  onChange={(value)=>setState(value)}
+                  options={[
+                    { label: 'Đang sử dụng', value: 'dang_su_dung' },
+                    { label: 'Hư hỏng', value: 'hu_hong'},
+                  ]}
+                />
+              </div>
+              <div style={{paddingBottom:10}}>
+                <p style={{margin:0,fontSize:13,fontWeight:600,marginBottom:8}}>Chi tiết tình trạng kiểm kê gần nhất</p>   
+                <Select
+                  style={{ width: '100%'}}
+                  value = {status}
+                  onChange={(value)=>setStatus(value)}
+                  options={[
+                    { label: 'Sử dụng tốt', value: 'good' },
+                    { label: 'Hư hỏng chờ sửa chữa', value: 'damaged_waiting_for_repair' },
+                    { label: 'Hư hỏng chờ thanh lý', value: 'damaged_waiting_for_liquidation' },
+                    { label: 'Tự hư hỏng', value: 'self_destruct'},
+                  ]}
+                />
+              </div>
+              <div style={{paddingBottom:10}}>
+                <p style={{margin:0,fontSize:13,fontWeight:600,marginBottom:8}}>Người sử dụng</p>   
+                <Select
+                  showSearch
+                  style={{ width: '100%'}}
+                  value = {assetUser}
+                  filterOption={(input, option) =>
+                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                  }
+                  onChange={(value)=>setAssetUser(value)}
+                  options={[...employee].map((item)=>{return {label:item.name,value:item.id}})}
+                />
+              </div>
+              <div style={{paddingBottom:10}}>
+                <p style={{margin:0,fontSize:13,fontWeight:600,marginBottom:8}}>Đã dán tem ?</p>   
+                <Radio.Group onChange={(e)=>setHasStamp(e.target.value)} value={hasStamp} style={{display:'flex',alignItems:'center',justifyContent:'space-around'}}>
+                  <Radio value={true}>Đã dán</Radio>
+                  <Radio value={false}>Chưa dán</Radio>
+                </Radio.Group>
               </div>
               <div style={{paddingBottom:10}}>
                 <p style={{margin:0,fontSize:13,fontWeight:600,marginBottom:8}}>Ghi chú</p>   
@@ -146,6 +247,12 @@ const InventoryLineDetail = ({openEdit,setOpenEdit,auditData}:{openEdit:any,setO
                     placeholder="Nhập giải trình của đơn vị" size="middle" style={{fontSize:13,background:myColor.backgroundColor}}/>
                 </Form.Item>
               </div>
+              {['draft','process'].some(i => i === auditData.state) && <Form.Item wrapperCol={{ offset: 0, span: 24 }} style={{margin:0,paddingTop:15}}>
+                <Button type="primary" htmlType="submit" size='large' loading = {isUpdating}
+                style = {{background: myColor.buttonColor, width:'100%', marginTop:10, fontSize:14, fontWeight:600}}>
+                  {isUpdating ? 'Đang xử lý' : 'Hoàn tất'} 
+                </Button>
+              </Form.Item>}
             </div>
           </Form>
         </div>

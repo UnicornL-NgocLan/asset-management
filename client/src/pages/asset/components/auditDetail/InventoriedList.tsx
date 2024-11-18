@@ -13,12 +13,10 @@ type DataIndex = keyof IAssetInventory;
 
 
 
-const InventoriedList = ({auditData,inventoryLines}:{auditData:IAudit | null,inventoryLines:IAssetInventory[]}) => {
+const InventoriedList = ({refetchAssetInventoryLines, auditData,inventoryLines,openEdit,setOpenEdit}:{refetchAssetInventoryLines:()=>void,auditData:IAudit | null,inventoryLines:IAssetInventory[],openEdit:any,setOpenEdit:(i:any)=>void}) => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
-
-  const [openEdit,setOpenEdit] = useState<any>(null);
 
   const handleSearch = (
     selectedKeys: string[],
@@ -121,6 +119,10 @@ const InventoriedList = ({auditData,inventoryLines}:{auditData:IAudit | null,inv
     )
   };
 
+  const handleRefetchInventoryList = async () => {
+    refetchAssetInventoryLines();
+    setOpenEdit(false);
+  }
   
 
   return (
@@ -165,7 +167,11 @@ const InventoriedList = ({auditData,inventoryLines}:{auditData:IAudit | null,inv
             rowKey={record => record.id} />
         </div>
       }
-    {openEdit && auditData && <InventoryLineDetail openEdit = {openEdit} setOpenEdit = {setOpenEdit} auditData = {auditData}/>}
+      {openEdit && auditData && <InventoryLineDetail 
+        openEdit = {openEdit} 
+        handleRefetchInventoryList = {handleRefetchInventoryList}
+        setOpenEdit = {setOpenEdit} 
+        auditData = {auditData}/>}
     </>
   )
 }

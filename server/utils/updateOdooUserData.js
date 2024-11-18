@@ -14,3 +14,20 @@ export async function hangeChangeUserCompany(odoo, companyId, uid) {
         });
     });
 }
+
+export async function updateInventoryLine(odoo, data, uid) {
+    return new Promise((resolve, reject) => {
+        const inParams = [];
+        inParams.push([parseInt(uid)]); 
+        inParams.push(data);
+        const params = [];
+        params.push(inParams);
+        odoo.execute_kw("asset.inventory.line", "write", params, function (err, user) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(user);
+            }
+        });
+    });
+}

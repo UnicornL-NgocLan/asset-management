@@ -15,6 +15,7 @@ import { SearchProps } from 'antd/es/input/Search'
 
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import Empty from 'widgets/Empty'
 
 
 const Asset = () => {
@@ -168,6 +169,10 @@ const Asset = () => {
             <div style={{padding:'1rem'}}>
                 <Skeleton count={5} height={100} borderRadius ={5} style={{marginBottom:6}}/>
             </div>
+            :
+            assetList.length === 0
+            ?
+            <div style={{padding:'1rem 0'}}><Empty/></div>
             :
             <AssetList data={assetList} handelChosenAsset={handelChosenAsset}/>
         }

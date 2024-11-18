@@ -293,3 +293,23 @@ export async function getAssetInventoryLine(odoo,id) {
       });
   });
 }
+
+export async function getEmployeeTemporary(odoo) {
+  return new Promise((resolve, reject) => {
+      const inParams = [];
+      inParams.push([]); 
+      inParams.push([
+        "id","name"
+      ]); 
+      inParams.push(0); 
+      const params = [];
+      params.push(inParams);
+      odoo.execute_kw("hr.employee.temporary", 'search_read', params, (err, assets) => {
+          if (err) {
+          reject(err);
+          } else {
+          resolve(assets);
+          }
+      });
+  });
+}
