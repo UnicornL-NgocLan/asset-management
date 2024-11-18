@@ -83,14 +83,13 @@ const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,
         giai_trinh:gtdv,
         status:state,
         latest_inventory_status:status,
-        quantity_chenh_lech:inventoryLine.quantity_so_sach - inventoryLine.quantity_thuc_te,
+        asset_user_temporary:assetUser, 
         da_dan_tem:hasStamp
       }
 
       await app.patch(`/api/update-inventory-line/${openEdit.id}`,updateData);
       handleRefetchInventoryList()
     } catch (error) {
-      console.log(error)
       const message = getErrorMessage(error);
       alert(message);
     } finally {
@@ -102,14 +101,14 @@ const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,
   useEffect(()=>{
     if(!inventoryLine) return;
     const {quantity_thuc_te,note,de_xuat_xu_ly,giai_trinh,latest_inventory_status,status:thuc_trang,da_dan_tem,asset_user_temporary} = inventoryLine;
-        form.setFieldValue("tt",quantity_thuc_te);
+        form.setFieldValue("tt",!quantity_thuc_te && canEdit? inventoryLine.quantity_so_sach : quantity_thuc_te);
         form.setFieldValue("note",note ? note : '');
         form.setFieldValue("dxxl",de_xuat_xu_ly ? de_xuat_xu_ly : '');
         form.setFieldValue("gtdv",giai_trinh ? giai_trinh : '');
         setState(thuc_trang)
         setStatus(latest_inventory_status);
         setHasStamp(da_dan_tem);
-        setAssetUser(asset_user_temporary ? asset_user_temporary[1] : '')
+        setAssetUser(asset_user_temporary ? asset_user_temporary[0] : '')
   },[inventoryLine]);
 
   useEffect(()=>{
@@ -207,8 +206,8 @@ const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,
               <div style={{paddingBottom:10}}>
                 <p style={{margin:0,fontSize:13,fontWeight:600,marginBottom:8}}>Đã dán tem ?</p>   
                 <Radio.Group onChange={(e)=>setHasStamp(e.target.value)} value={hasStamp} style={{display:'flex',alignItems:'center',justifyContent:'space-around'}}>
-                  <Radio value={true}>Đã dán</Radio>
-                  <Radio value={false}>Chưa dán</Radio>
+                  <Radio value={true} style={{fontSize:13}}>Đã dán</Radio>
+                  <Radio value={false} style={{fontSize:13}}>Chưa dán</Radio>
                 </Radio.Group>
               </div>
               <div style={{paddingBottom:10}}>

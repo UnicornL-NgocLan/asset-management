@@ -1,5 +1,7 @@
 import { IAssetInventory, IAudit } from 'interface'
 import empty from '../../../../images/empty-box.png'
+import check from '../../../../images/check.png'
+import cross from '../../../../images/letter-x.png'
 import Table from 'antd/es/table/Table'
 import { SearchOutlined } from '@ant-design/icons';
 import type { InputRef, TableColumnType } from 'antd';
@@ -96,7 +98,7 @@ const InventoriedList = ({refetchAssetInventoryLines, auditData,inventoryLines,o
       title: 'SS',
       dataIndex: 'quantity_so_sach',
       key: 'quantity_so_sach',
-      width:50,
+      width:40,
       align: 'center' as const,
       render: (text:any) => <span style={{fontSize:12}}>{text}</span>,
     },
@@ -104,9 +106,17 @@ const InventoriedList = ({refetchAssetInventoryLines, auditData,inventoryLines,o
       title: 'TT',
       dataIndex: 'quantity_thuc_te',
       key: 'quantity_thuc_te',
-      width:50,
+      width:40,
       align: 'center' as const,
       render: (text:any) => <span style={{fontSize:12}}>{text}</span>,
+    },
+    {
+      title: 'ĐX',
+      dataIndex: 'da_xong',
+      key: 'da_xong',
+      width:40,
+      align: 'center' as const,
+      render: (text:any) => <span style={{fontSize:12}}><img alt="" style={{height:15}} src={text ? check : cross}/></span>,
     },
   ]
 
@@ -139,6 +149,7 @@ const InventoriedList = ({refetchAssetInventoryLines, auditData,inventoryLines,o
           style={{paddingBottom:10,
             padding:'0 1rem 0rem',
             position:'relative',
+            marginTop:5,
             height: "calc(100vh - 130px)",
             overflow: "auto"
         }}>
@@ -148,11 +159,11 @@ const InventoriedList = ({refetchAssetInventoryLines, auditData,inventoryLines,o
             size='small'
             locale={locale}
             bordered
-            sticky={true}
+            sticky={true} 
             pagination={{ 
               simple:true,
               size:'small',
-              position: ['topCenter'],
+              position: ['bottomCenter'],
               hideOnSinglePage:true,
               pageSize: 40,
               showTotal:(total, range) => <span style={{fontSize:12}}>{range[0]}-{range[1]} / {total}</span>
