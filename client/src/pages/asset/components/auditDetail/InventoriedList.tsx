@@ -15,7 +15,7 @@ type DataIndex = keyof IAssetInventory;
 
 
 
-const InventoriedList = ({refetchAssetInventoryLines, auditData,inventoryLines,openEdit,setOpenEdit}:{refetchAssetInventoryLines:()=>void,auditData:IAudit | null,inventoryLines:IAssetInventory[],openEdit:any,setOpenEdit:(i:any)=>void}) => {
+const InventoriedList = ({refetchAssetInventoryLines, auditData,inventoryLines,openEdit,setOpenEdit}:{refetchAssetInventoryLines:(i:boolean)=>void,auditData:IAudit | null,inventoryLines:IAssetInventory[],openEdit:any,setOpenEdit:(i:any)=>void}) => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
@@ -112,10 +112,20 @@ const InventoriedList = ({refetchAssetInventoryLines, auditData,inventoryLines,o
     },
     {
       title: 'ĐX',
-      dataIndex: 'da_xong',
-      key: 'da_xong',
-      width:40,
+      dataIndex: 'is_done',
+      key: 'is_done',
+      width:60,
       align: 'center' as const,
+      filters: [
+        {
+          text: 'Đã kiểm kê',
+          value: true,
+        },
+        {
+          text: 'Chưa kiểm kê',
+          value: false,
+      },],
+      onFilter: (value:any, record:any) => record.is_done === value,
       render: (text:any) => <span style={{fontSize:12}}><img alt="" style={{height:15}} src={text ? check : cross}/></span>,
     },
   ]
@@ -130,7 +140,7 @@ const InventoriedList = ({refetchAssetInventoryLines, auditData,inventoryLines,o
   };
 
   const handleRefetchInventoryList = async () => {
-    refetchAssetInventoryLines();
+    refetchAssetInventoryLines(true);
     setOpenEdit(false);
   }
   

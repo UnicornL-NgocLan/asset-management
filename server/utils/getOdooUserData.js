@@ -259,7 +259,7 @@ export async function getAssetInventory (odoo, auditId) {
   return new Promise((resolve, reject) => {
     const inParams = [];
     inParams.push([["asset_inventory_id","=",parseInt(auditId)]]); 
-    inParams.push(["id","asset_id","quantity_so_sach","quantity_thuc_te","status"]); 
+    inParams.push(["id","asset_id","quantity_so_sach","quantity_thuc_te","status","is_done"]); 
     inParams.push(0);
     const params = [];
     params.push(inParams);
@@ -279,7 +279,7 @@ export async function getAssetInventoryLine(odoo,id) {
       const inParams = [];
       inParams.push([["id","=",id]]); 
       inParams.push([
-        "id","asset_id","quantity_so_sach","quantity_thuc_te","asset_inventory_id","status","da_dan_tem","asset_user_temporary","validated_date","note","de_xuat_xu_ly","giai_trinh","latest_inventory_status"
+        "id","asset_id","quantity_so_sach","quantity_thuc_te","asset_inventory_id","status","da_dan_tem","asset_user_temporary","validated_date","note","de_xuat_xu_ly","giai_trinh","latest_inventory_status","is_done"
       ]); 
       inParams.push(0); 
       const params = [];

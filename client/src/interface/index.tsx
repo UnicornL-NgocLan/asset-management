@@ -48,4 +48,5 @@ export interface IAssetInventory {
     quantity_so_sach: number,
     quantity_thuc_te: number,
     status: string,
+    is_done:boolean
 }

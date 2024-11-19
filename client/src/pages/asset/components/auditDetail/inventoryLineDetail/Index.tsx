@@ -83,10 +83,10 @@ const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,
         giai_trinh:gtdv,
         status:state,
         latest_inventory_status:status,
-        asset_user_temporary:assetUser, 
-        da_dan_tem:hasStamp
+        asset_user_temporary:assetUser ? assetUser : null, 
+        da_dan_tem:hasStamp,
+        is_done:true,
       }
-
       await app.patch(`/api/update-inventory-line/${openEdit.id}`,updateData);
       handleRefetchInventoryList()
     } catch (error) {
@@ -194,6 +194,7 @@ const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,
                 <p style={{margin:0,fontSize:13,fontWeight:600,marginBottom:8}}>Người sử dụng</p>   
                 <Select
                   showSearch
+                  allowClear
                   style={{ width: '100%'}}
                   value = {assetUser}
                   filterOption={(input, option) =>

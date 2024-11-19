@@ -71,9 +71,13 @@ const AuditDetail = () => {
         }
     }
 
-    const handleGetAssetInventoryLines = async () => {
+    const handleGetAssetInventoryLines = async (noLoading?:boolean) => {
         try {
-            setLoading(true);
+            if(noLoading){
+                setLoading(false);
+            } else {
+                setLoading(true);
+            }
             const {data:{data}} = await app.get(`/api/get-asset-inventory/${id}`);
             if(data.length > 0){
                 setInventoryLines(data)
