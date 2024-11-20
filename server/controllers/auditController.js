@@ -5,8 +5,12 @@ import {
     getDepartments,
     getAssetInventoryCommitee,
     getAssetInventoriedDept,
-    getAssetInventory
+    getAssetInventory,
+    getAssetInventoryLine,
+    getEmployeeTemporary
 } from "../utils/getOdooUserData.js"
+
+import {updateInventoryLine} from "../utils/updateOdooUserData.js"
 
 
 export const auditCtrl = {
@@ -72,6 +76,36 @@ export const auditCtrl = {
             const {id} = req.params;
             const data = await getAssetInventory(req.odoo,id);
             res.status(200).json({data})
+        } catch (error) {
+            res.status(500).json({msg:error.message})
+        }
+    },
+
+    getAssetInventoryLine: async (req,res) => {
+        try {
+            const {id} = req.params;
+            const data = await getAssetInventoryLine(req.odoo,id);
+            res.status(200).json({data})
+        } catch (error) {
+            res.status(500).json({msg:error.message})
+        }
+    },
+
+    getEmployeeTemporary: async (req,res) => {
+        try {
+            const data = await getEmployeeTemporary(req.odoo);
+            res.status(200).json({data})
+        } catch (error) {
+            res.status(500).json({msg:error.message})
+        }
+    },
+
+    updateInventoryLine: async (req,res) => {
+        try {
+            const {id} = req.params;
+            const change = req.body;
+            await updateInventoryLine(req.odoo,change,id);
+            res.status(200).json({msg:"Đã hoàn tất"})
         } catch (error) {
             res.status(500).json({msg:error.message})
         }

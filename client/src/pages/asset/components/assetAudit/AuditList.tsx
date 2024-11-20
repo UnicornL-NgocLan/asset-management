@@ -14,6 +14,7 @@ import rightArrow from '../../../../images/right-arrow.png';
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useSelector } from 'react-redux';
+import Empty from 'widgets/Empty';
 
 const AuditList = ({state}:{state:number}) => {
     const [audits,setAudits] = useState<IAuditItemInList[]>([]);
@@ -81,6 +82,8 @@ const AuditList = ({state}:{state:number}) => {
         validated:'#0D7C66',
         cancel:'#EE4E4E'
     }
+
+    if(!loading && filteredAudits.length === 0) return <div style={{padding:'1rem 0'}}><Empty/></div>
 
   return (
     <div style={{padding:'1rem'}}>

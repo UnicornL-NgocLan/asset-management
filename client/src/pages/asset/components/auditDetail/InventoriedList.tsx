@@ -1,5 +1,7 @@
 import { IAssetInventory, IAudit } from 'interface'
 import empty from '../../../../images/empty-box.png'
+import check from '../../../../images/check.png'
+import cross from '../../../../images/letter-x.png'
 import Table from 'antd/es/table/Table'
 import { SearchOutlined } from '@ant-design/icons';
 import type { InputRef, TableColumnType } from 'antd';
@@ -13,12 +15,10 @@ type DataIndex = keyof IAssetInventory;
 
 
 
-const InventoriedList = ({inventoryLines}:{auditData:IAudit | null,inventoryLines:IAssetInventory[]}) => {
+const InventoriedList = ({refetchAssetInventoryLines, auditData,inventoryLines,openEdit,setOpenEdit}:{refetchAssetInventoryLines:(i:boolean)=>void,auditData:IAudit | null,inventoryLines:IAssetInventory[],openEdit:any,setOpenEdit:(i:any)=>void}) => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
-
-  const [openEdit,setOpenEdit] = useState<any>(null);
 
   const handleSearch = (
     selectedKeys: string[],
@@ -98,7 +98,7 @@ const InventoriedList = ({inventoryLines}:{auditData:IAudit | null,inventoryLine
       title: 'SS',
       dataIndex: 'quantity_so_sach',
       key: 'quantity_so_sach',
-      width:50,
+      width:40,
       align: 'center' as const,
       render: (text:any) => <span style={{fontSize:12}}>{text}</span>,
     },
@@ -106,9 +106,27 @@ const InventoriedList = ({inventoryLines}:{auditData:IAudit | null,inventoryLine
       title: 'TT',
       dataIndex: 'quantity_thuc_te',
       key: 'quantity_thuc_te',
-      width:50,
+      width:40,
       align: 'center' as const,
       render: (text:any) => <span style={{fontSize:12}}>{text}</span>,
+    },
+    {
+      title: 'ĐX',
+      dataIndex: 'is_done',
+      key: 'is_done',
+      width:60,
+      align: 'center' as const,
+      filters: [
+        {
+          text: 'Đã kiểm kê',
+          value: true,
+        },
+        {
+          text: 'Chưa kiểm kê',
+          value: false,
+      },],
+      onFilter: (value:any, record:any) => record.is_done === value,
+      render: (text:any) => <span style={{fontSize:12}}><img alt="" style={{height:15}} src={text ? check : cross}/></span>,
     },
   ]
 
@@ -121,6 +139,10 @@ const InventoriedList = ({inventoryLines}:{auditData:IAudit | null,inventoryLine
     )
   };
 
+  const handleRefetchInventoryList = async () => {
+    refetchAssetInventoryLines(true);
+    setOpenEdit(false);
+  }
   
 
   return (
@@ -137,6 +159,7 @@ const InventoriedList = ({inventoryLines}:{auditData:IAudit | null,inventoryLine
           style={{paddingBottom:10,
             padding:'0 1rem 0rem',
             position:'relative',
+            marginTop:5,
             height: "calc(100vh - 130px)",
             overflow: "auto"
         }}>
@@ -146,11 +169,11 @@ const InventoriedList = ({inventoryLines}:{auditData:IAudit | null,inventoryLine
             size='small'
             locale={locale}
             bordered
-            sticky={true}
+            sticky={true} 
             pagination={{ 
               simple:true,
               size:'small',
-              position: ['topCenter'],
+              position: ['bottomCenter'],
               hideOnSinglePage:true,
               pageSize: 40,
               showTotal:(total, range) => <span style={{fontSize:12}}>{range[0]}-{range[1]} / {total}</span>
@@ -165,7 +188,11 @@ const InventoriedList = ({inventoryLines}:{auditData:IAudit | null,inventoryLine
             rowKey={record => record.id} />
         </div>
       }
-    {openEdit && <InventoryLineDetail openEdit = {openEdit} setOpenEdit = {setOpenEdit}/>}
+      {openEdit && auditData && <InventoryLineDetail 
+        openEdit = {openEdit} 
+        handleRefetchInventoryList = {handleRefetchInventoryList}
+        setOpenEdit = {setOpenEdit} 
+        auditData = {auditData}/>}
     </>
   )
 }
