@@ -1,9 +1,18 @@
 import { List } from 'antd'
+import marker from '../../../images/placeholder.png'
+import money from '../../../images/dollar.png'
+import user from '../../../images/user.png'
 
 
 const AssetList = ({data,handelChosenAsset}:{data:any[],handelChosenAsset:(i:number)=>void}) => {
     const handleViewDetail = (id:number) => {
         handelChosenAsset(id)
+    }
+
+    const handleGetAssetUser = (asset:any) => {
+        return asset.asset_user 
+            ? asset.asset_user[1] 
+            : 'Không có'
     }
 
   return (
@@ -18,12 +27,21 @@ const AssetList = ({data,handelChosenAsset}:{data:any[],handelChosenAsset:(i:num
                 padding:8
             }}>
                 <List.Item.Meta
-                title={<a style={{margin:0, fontSize:14,fontWeight:500}}>{item.label}</a>}
+                title={<span style={{margin:0, fontSize:14,fontWeight:500}}>{item.label}</span>}
                 />
                 <div>
-                    <p style={{margin:0, fontSize:13}}>{`Địa điểm: ${item.location &&  item.location[1]}`}</p>
-                    <p style={{margin:0, fontSize:13}}>{`Số lượng: ${item.quantity}`}</p>
-                    <p style={{margin:0, fontSize:13}}>{`Nguyên giá: ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.total_val)}`}</p>
+                    <span style={{margin:0, fontSize:13, display:'flex', gap:5,alignItems:'center'}}>
+                        <img alt='' src={marker} style={{height:14}}/>
+                        {item.location &&  item.location[1]}
+                    </span>
+                    <span style={{margin:0, fontSize:13, display:'flex', gap:5,alignItems:'center'}}>
+                        <img alt='' src={money} style={{height:14}}/>
+                        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.total_val)}
+                    </span>
+                    <span style={{margin:0, fontSize:13, display:'flex', gap:5,alignItems:'center'}}>
+                        <img alt='' src={user} style={{height:14}}/>
+                        {handleGetAssetUser(item)}
+                    </span>
                 </div>
             </List.Item>
             )}

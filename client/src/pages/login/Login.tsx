@@ -68,7 +68,7 @@ const Login = () => {
         >
 
           <div style={{display:'flex',justifyContent:'center'}}>
-            <Image src = {logo} style={{maxWidth:200}} preview = {false}/>
+            <Image src = {logo} style={{maxWidth:200}} preview = {false} alt=""/>
           </div>
 
           <Form.Item<FieldType>

@@ -1,6 +1,8 @@
 import { myColor } from 'color'
-import location from '../../../images/placeholder.png'
+import location from '../../../../images/placeholder.png'
 import moment from 'moment'
+import _ from 'lodash';
+import Empty from 'widgets/Empty';
 
 const GeneralInfo = ({data}:{data:{[key:string]:any}}) => {
     const translateState = (text:string)=>{
@@ -26,13 +28,15 @@ const GeneralInfo = ({data}:{data:{[key:string]:any}}) => {
         }
     }
 
+    if(_.isEmpty(data)) return <Empty/>
+
   return (
     <div style={{overflow:'auto',padding:'0.25rem 0.25rem 1.5rem'}}>
         <div style={{background:'white',padding:'0.5rem 1rem', borderRadius:5,boxShadow:'2px 2px 2px rgba(0,0,0,0.2)'}}>
             <h4 style={{margin:0,fontWeight:500, fontSize:14, color:myColor.buttonColor}}>Thông tin chung</h4>
             <hr/>
             <div>
-                <h5 style={{fontWeight:500, fontSize:15,margin:'1rem 0 0.5rem'}}>{data.name}</h5>
+                <h5 style={{fontWeight:500, fontSize:14,margin:'1rem 0 0.5rem'}}>{data.name}</h5>
                 <div>
                     <div style={{display:'flex',alignItems:'center',gap:5,marginBottom:'1.5rem'}}>
                         <img src={location} alt="" style={{width:20}}/>
@@ -54,7 +58,7 @@ const GeneralInfo = ({data}:{data:{[key:string]:any}}) => {
             <div>
                 <div>
                     <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Số biên bản nghiệm thu:</span> {data.acceptance_number}</p>
-                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày biên bản nghiệm thu:</span> {data.acceptance_date && moment(data.acceptance_date).format("DD-MM-YYYY")}</p>
+                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày biên bản nghiệm thu:</span> {data.acceptance_date && moment(data.acceptance_date).add(7, 'hours').format("DD-MM-YYYY")}</p>
                     <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Mô tả:</span> {data.description}</p>
                     <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Số lượng: </span> {data.quantity}</p>
                     <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Đơn vị đo lường:</span> {data.alt_unit}</p>
@@ -86,10 +90,10 @@ const GeneralInfo = ({data}:{data:{[key:string]:any}}) => {
                 <div>
                     <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Tình trạng ban đầu:</span> {translateState(data.asset_status_start)}</p>
                     <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Tình trạng kiểm kê gần nhất:</span> {translateState(data.latest_inventory_status)}</p>
-                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày điều chuyển gần nhất:</span> {data.latest_asset_transfer_date && moment(data.latest_asset_transfer_date).format("DD-MM-YYYY")}</p>
-                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày nhận tài sản: </span> {data.asset_receive_date && moment(data.asset_receive_date).format("DD-MM-YYYY")}</p>
-                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày thanh lý tài sản:</span> {data.liquidation_date && moment(data.liquidation_date).format("DD-MM-YYYY")}</p>
-                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày sửa chữa:</span> {data.repair_date && moment(data.repair_date).format("DD-MM-YYYY")}</p>
+                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày điều chuyển gần nhất:</span> {data.latest_asset_transfer_date && moment(data.latest_asset_transfer_date).add(7, 'hours').format("DD-MM-YYYY")}</p>
+                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày nhận tài sản: </span> {data.asset_receive_date && moment(data.asset_receive_date).add(7, 'hours').format("DD-MM-YYYY")}</p>
+                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày thanh lý tài sản:</span> {data.liquidation_date && moment(data.liquidation_date).add(7, 'hours').format("DD-MM-YYYY")}</p>
+                    <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Ngày sửa chữa:</span> {data.repair_date && moment(data.repair_date).add(7, 'hours').format("DD-MM-YYYY")}</p>
                 </div>
             </div>
         </div>

@@ -34,7 +34,7 @@ const InventoryInfo = ({data}:{data:{[key:string]:any}[]}) => {
             data.sort((a,b)=> b.id - a.id).map((item)=> {
                 return <div key={item.id} style={{background:'white',padding:'0.5rem 1rem', marginBottom:16, borderRadius:5,boxShadow:'2px 2px 2px rgba(0,0,0,0.2)'}}>
                     <div>
-                        <h4 style={{margin:0,fontWeight:500, fontSize:13}}>{item.validated_date && moment(item.validate_date).format("DD-MM-YYYY")} {item.asset_inventory_id && `(${item.asset_inventory_id[1]})`}</h4>
+                        <h4 style={{margin:0,fontWeight:500, fontSize:13}}>{item.validated_date && moment(item.validate_date).add(7, 'hours').format("DD-MM-YYYY")} {item.asset_inventory_id && `(${item.asset_inventory_id[1]})`}</h4>
                         <hr/>
                         <div>
                             <p style={{fontSize:12,margin:'0.5rem 0'}}><span style={{fontWeight:500}}>Số lượng sổ sách:</span> {item.quantity_so_sach}</p>
