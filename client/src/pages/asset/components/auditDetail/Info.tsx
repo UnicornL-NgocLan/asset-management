@@ -128,7 +128,7 @@ const Info = ({isCurrentUserAssigned,assignedLineId,assetTypes,auditData,commite
     }
 
     const handleGenerateQRCode = () => {
-        setQrCodeContent(`http://localhost:3000/asset/audit/${auditData?.id}?inventory-share-qr=true`)
+        setQrCodeContent(`${process.env.REACT_APP_CLIENT_URL}/asset/audit/${auditData?.id}?inventory-share-qr=true`)
         setOpenQrCodeModal(true)
     }
 
