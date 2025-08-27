@@ -72,6 +72,7 @@ const Header = ({handleChangeCompany,setAssetList,handelChosenAsset,handleGetAss
         if(window.confirm("Bạn có muốn đăng xuất?")){
             await app.delete("/api/logout")
             dispatch({type:"logout"});
+            localStorage.removeItem('pti_01')
         }
     }
 
@@ -165,29 +166,29 @@ const Header = ({handleChangeCompany,setAssetList,handelChosenAsset,handleGetAss
             </Dropdown>
           </div>
           
-          <div style={{display:'flex',alignItems:'center',padding:'0 1rem 0.5rem',gap:8}}>
+          {(auth.in_group_132 || auth.in_group_131) && <div style={{display:'flex',alignItems:'center',padding:'0 1rem 0.5rem',gap:8}}>
               <Form
                 form={form}
                 style={{width:"100%"}}
               >
                 <Form.Item name="name" style={{margin:0}}>
-                  <Input placeholder="Nhập mã tài sản hoặc tên tài sản" allowClear onChange={debounce(onChange,500)}/>
+                  <Input placeholder="Nhập mã tài sản hoặc tên tài sản" allowClear onChange={debounce(onChange,500)} />
                 </Form.Item>
               </Form>
-          </div>
+          </div>}
 
           <div style={{padding:'0 1rem', display:'flex',justifyContent:'center', gap: 25}}>
             <Button onClick={()=>navigate("/asset/audit")} style={{padding:'0.25rem',}} type="text">
               <GiNotebook  style={{color:'white',fontSize:16}}/>
               <span style={{fontSize:12, color:'white'}}>Kiểm kê tài sản</span>
             </Button>
-            <Button onClick={openScanQR} style={{padding:'0.25rem'}} type="text">
+            {(auth.in_group_132 || auth.in_group_131) && <Button onClick={openScanQR} style={{padding:'0.25rem'}} type="text">
               <div
                 style={{display:'flex',width:'17px',height:'17px',borderRadius:3,background:'white',padding:2,overflow:'hidden'}}>
                   <BsQrCode style={{width:'100%',height:'100%'}}/>
               </div>
               <span style={{fontSize:12, color:'white'}}>Quét mã QR</span>
-            </Button>
+            </Button>}
           </div>
       </div>
       <DrawerSelection open = {openDrawer} handleClose = {handleClose} handleChangeCompany={handleChangeCompany}/>

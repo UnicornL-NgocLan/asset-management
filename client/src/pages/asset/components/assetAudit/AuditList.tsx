@@ -10,6 +10,7 @@ import stickyNote from '../../../../images/post-it.png';
 import marker from '../../../../images/placeholder.png';
 import clock from '../../../../images/clock.png';
 import rightArrow from '../../../../images/right-arrow.png';
+import office from '../../../../images/office.png'
 
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -29,7 +30,7 @@ const AuditList = ({state}:{state:number}) => {
             setLoading(true);
             const {data:{data}} = await app.get("/api/get-audit-list");
             setAudits([...data].sort((a,b)=> b.id - a.id));
-            setFilteredAudits([...data]);
+            setFilteredAudits([...data].sort((a,b)=>b.id - a.id));
         } catch (error) {
             const message = getErrorMessage(error);
             alert(message);
@@ -42,7 +43,7 @@ const AuditList = ({state}:{state:number}) => {
         if(idList.length === 0) return <></>
         const officeList = [...idList].map((id)=>{
             const office = offices.find((item: {id:number,name:string}) => item.id === id);
-            if(!office) return <></>
+            if(!office) return null
             return <Tag style={{margin:0,fontSize:10}} key={office.id}>{office?.name}</Tag>
         })
 
@@ -57,30 +58,42 @@ const AuditList = ({state}:{state:number}) => {
     useEffect(()=>{
         switch(state){
             case 0:
-                setFilteredAudits([...audits]);
+                setFilteredAudits([...audits].sort((a,b)=>b.id - a.id));
                 break;
             case 1:
-                setFilteredAudits([...audits].filter((i)=> i.state === 'draft'));
+                setFilteredAudits([...audits].filter((i)=> i.state === 'draft').sort((a,b)=>b.id - a.id));
                 break;
             case 2:
-                setFilteredAudits([...audits].filter((i)=> i.state === 'process'));
+                setFilteredAudits([...audits].filter((i)=> i.state === 'process').sort((a,b)=>b.id - a.id));
+                break;
+            case 2.5:
+                setFilteredAudits([...audits].filter((i)=> i.state === 'verifying').sort((a,b)=>b.id - a.id));
                 break;
             case 3:
-                setFilteredAudits([...audits].filter((i)=> i.state === 'validated'));
+                setFilteredAudits([...audits].filter((i)=> i.state === 'validated').sort((a,b)=>b.id - a.id));
                 break;
             case 4:
-                setFilteredAudits([...audits].filter((i)=> i.state === 'cancel'));
+                setFilteredAudits([...audits].filter((i)=> i.state === 'cancel').sort((a,b)=>b.id - a.id));
                 break;
             default:
-                setFilteredAudits([...audits]);
+                setFilteredAudits([...audits].sort((a,b)=>b.id - a.id));
         }
     },[state])
 
     const borderColorByState : { [key: string]: string }  = {
-        draft:'#F3F3F3',
+        draft:'black',
         process:'#FFB534',
+        verifying: '#3787c4ff',
         validated:'#0D7C66',
         cancel:'#EE4E4E'
+    }
+
+    const stateToVietnamese : { [key: string]: string }  = {
+        draft:'Nháp',
+        process:'Đang thực hiện',
+        verifying: 'Đang xác nhận',
+        validated:'Đã hoàn tất',
+        cancel:'Bị hủy'
     }
 
     if(!loading && filteredAudits.length === 0) return <div style={{padding:'1rem 0'}}><Empty/></div>
@@ -98,7 +111,7 @@ const AuditList = ({state}:{state:number}) => {
                 renderItem={(item:IAuditItemInList, index) => (
                 <List.Item 
                 onClick={()=>navigate(`/asset/audit/${item.id}`)}
-                key={index} style={{
+                key={item.id} style={{
                     display:'block',
                     background:'white',
                     marginBottom:10,
@@ -111,6 +124,10 @@ const AuditList = ({state}:{state:number}) => {
                     title={<a style={{margin:0, fontSize:14,fontWeight:500}}>{item.name}</a>}
                     />
                     <div style={{display:'flex',flexDirection:'column',gap:5}}>
+                        <span style={{margin:0, fontSize:12, display:'flex', gap:10,alignItems:'center'}}>
+                                <img alt='' src={office} style={{height:14}}/>
+                                <span style={{margin:0, fontSize:12}}>{item.company_id[1]}</span>
+                            </span>
                         {
                             item.start_time && item.end_time
                             ?
@@ -148,6 +165,9 @@ const AuditList = ({state}:{state:number}) => {
                             <img alt='' src={stickyNote} style={{height:14}}/>
                             {item.note}
                         </span>}
+                        <span style={{margin:0, marginTop:3, fontSize:12, display:'flex', gap:5,alignItems:'center',flexWrap:'wrap'}}>
+                            <Tag color={borderColorByState[item.state]}>{stateToVietnamese[item.state]}</Tag>
+                        </span>
                     </div>
                 </List.Item>
                 )}

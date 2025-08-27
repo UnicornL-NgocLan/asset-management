@@ -14,6 +14,12 @@ export interface IAuditItemInList {
     create_date:string,
     note:string,
     sea_office_id:any[],
+    company_id: any[]
+}
+
+export interface IAssetTypeInterface {
+    id:number,
+    name:String
 }
 
 export interface IAudit extends IAuditItemInList {
@@ -26,7 +32,8 @@ export interface IAudit extends IAuditItemInList {
     process_state:any[]
     sea_office_id:any[],
     company_id:any[],
-    department: number[]
+    department: number[],
+    asset_type_ids: number[],
 }
 
 export interface ICommitee {
@@ -34,12 +41,16 @@ export interface ICommitee {
     employee_id_temp:boolean | [],
     position:boolean | [],
     asset_inventory_id:number,
+    confirm_completed:boolean,
+    assigned_verify:boolean,
 }
 
 export interface IAssetInventoriedDept {
     id:number,
     employee_id_temp:boolean | [],
-    department:boolean | []
+    department:boolean | [],
+    confirm_completed:boolean,
+    assigned_verify:boolean,
 }
 
 export interface IAssetInventory {
@@ -48,5 +59,8 @@ export interface IAssetInventory {
     quantity_so_sach: number,
     quantity_thuc_te: number,
     status: string,
-    is_done:boolean
+    is_done:boolean,
+    asset_using_company_id: any[],
+    asset_company_id: any[]
+
 }

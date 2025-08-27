@@ -29,6 +29,11 @@ const Header = ({setState}:{setState:(i:number)=> void}) => {
       label: 'Đang thực hiện',
       onClick: ()=>handleFilter(2)
     },
+     {
+      key: '2.5',
+      label: 'Đang xác nhận',
+      onClick: ()=>handleFilter(2.5)
+    },
     {
       key: '3',
       label: 'Đã hoàn tất',

@@ -12,12 +12,14 @@ import AssetDetail from 'pages/asset/components/assetDetail/AssetDetail.tsx';
 import AssetAudit from 'pages/asset/components/assetAudit/Index.tsx';
 import AuditDetail from 'pages/asset/components/auditDetail/Index.tsx';
 import PageLoading from 'widgets/PageLoading.tsx';
+import NavigateRoute from 'NavigateRoute.tsx';
+import PreRoute from 'PreRoute.tsx';
 
 function App() {
   const dispatch = useDispatch();
   const auth = useSelector((state: RootState) => state.auth);
   const [fetchingData,setFetchingData] = useState(false);
-
+  
   const checkAuth = async () => {
     try {
       setFetchingData(true);
@@ -45,11 +47,13 @@ function App() {
         :
         <BrowserRouter>
           <Routes>
-            <Route path="/login" element={auth ? <Navigate to="/" /> : <Login/>}/>
-            <Route path="/" element={<PrivateRoute><Asset/></PrivateRoute>}/>
-            <Route path="/asset/:id" element={<PrivateRoute><AssetDetail/></PrivateRoute>}/>
-            <Route path="/asset/audit" element={<PrivateRoute><AssetAudit/></PrivateRoute>}/>
-            <Route path="/asset/audit/:id" element={<PrivateRoute><AuditDetail/></PrivateRoute>}/>
+            <Route element={<PreRoute/>}>
+              <Route path="/login" element={<NavigateRoute/>}/>
+              <Route path="/" element={<PrivateRoute><Asset/></PrivateRoute>}/>
+              <Route path="/asset/:id" element={<PrivateRoute><AssetDetail/></PrivateRoute>}/>
+              <Route path="/asset/audit" element={<PrivateRoute><AssetAudit/></PrivateRoute>}/>
+              <Route path="/asset/audit/:id" element={<PrivateRoute><AuditDetail/></PrivateRoute>}/>
+            </Route>
           </Routes>
         </BrowserRouter>
       }
