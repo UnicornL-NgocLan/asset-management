@@ -29,7 +29,7 @@ const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,
       setLoading(true);
       const {data:{data}} = await app.get(`/api/get-asset-inventory-line/${openEdit.id}`);
       if(data.length > 0){
-        setInventoryLine(data[0]);
+        setInventoryLine({...data[0],opennedByQR:openEdit.opennedByQR});
       }
     } catch (error) {
         const message = getErrorMessage(error);
@@ -100,14 +100,14 @@ const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,
 
   useEffect(()=>{
     if(!inventoryLine) return;
-    const {quantity_thuc_te,note,de_xuat_xu_ly,giai_trinh,latest_inventory_status,status:thuc_trang,da_dan_tem,asset_user_temporary} = inventoryLine;
-        form.setFieldValue("tt",!quantity_thuc_te && canEdit? inventoryLine.quantity_so_sach : quantity_thuc_te);
+    const {quantity_thuc_te,note,de_xuat_xu_ly,giai_trinh,latest_inventory_status,status:thuc_trang,da_dan_tem,asset_user_temporary,opennedByQR} = inventoryLine;
+    form.setFieldValue("tt",!quantity_thuc_te && canEdit? inventoryLine.quantity_so_sach : quantity_thuc_te);
         form.setFieldValue("note",note ? note : '');
         form.setFieldValue("dxxl",de_xuat_xu_ly ? de_xuat_xu_ly : '');
         form.setFieldValue("gtdv",giai_trinh ? giai_trinh : '');
         setState(thuc_trang)
         setStatus(latest_inventory_status);
-        setHasStamp(da_dan_tem);
+        setHasStamp(opennedByQR || da_dan_tem);
         setAssetUser(asset_user_temporary ? asset_user_temporary[0] : '')
   },[inventoryLine]);
 

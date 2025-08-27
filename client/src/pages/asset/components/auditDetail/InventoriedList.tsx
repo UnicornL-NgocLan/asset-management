@@ -4,12 +4,13 @@ import check from '../../../../images/check.png'
 import cross from '../../../../images/letter-x.png'
 import Table from 'antd/es/table/Table'
 import { SearchOutlined } from '@ant-design/icons';
-import type { InputRef, TableColumnType } from 'antd';
+import { InputRef, TableColumnType,Select } from 'antd';
 import { Button, Input, Space } from 'antd';
 import type { FilterDropdownProps } from 'antd/es/table/interface';
 import Highlighter from 'react-highlight-words'
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import InventoryLineDetail from './inventoryLineDetail/Index';
+import { GiSettingsKnobs } from "react-icons/gi";
 
 type DataIndex = keyof IAssetInventory;
 
@@ -18,6 +19,8 @@ type DataIndex = keyof IAssetInventory;
 const InventoriedList = ({refetchAssetInventoryLines, auditData,inventoryLines,openEdit,setOpenEdit}:{refetchAssetInventoryLines:(i:boolean)=>void,auditData:IAudit | null,inventoryLines:IAssetInventory[],openEdit:any,setOpenEdit:(i:any)=>void}) => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
+  const [filteredData,setFilteredData] = useState<IAssetInventory[]>(inventoryLines)
+  const [chosenSelection,setChosenSelection] = useState('all')
   const searchInput = useRef<InputRef>(null);
 
   const handleSearch = (
@@ -143,6 +146,31 @@ const InventoriedList = ({refetchAssetInventoryLines, auditData,inventoryLines,o
     refetchAssetInventoryLines(true);
     setOpenEdit(false);
   }
+
+  const handleChangeValue = (value:string) => {
+    setChosenSelection(value)
+  }
+
+  const handleFilterData = () => {
+    if(chosenSelection === 'all'){
+      setFilteredData(inventoryLines)
+    }else if(chosenSelection === 'both_same'){
+      const filteredResult = inventoryLines.filter(i => i.asset_company_id![0] === auditData?.company_id![0] && i.asset_using_company_id![0]===auditData?.company_id![0])
+      setFilteredData(filteredResult)
+    }else if(chosenSelection === 'nay_so_huu_khac_su_dung'){
+      const filteredResult = inventoryLines.filter(i => i.asset_company_id![0] === auditData?.company_id![0] && i.asset_using_company_id![0]!==auditData?.company_id![0])
+      setFilteredData(filteredResult)
+    }else if(chosenSelection === 'nay_su_dung_khac_so_huu'){
+      const filteredResult = inventoryLines.filter(i => i.asset_company_id![0] !== auditData?.company_id![0] && i.asset_using_company_id![0]===auditData?.company_id![0])
+      setFilteredData(filteredResult)
+    }else {
+      setFilteredData(inventoryLines)
+    }
+  }
+
+  useEffect(()=>{
+    handleFilterData()
+  },[chosenSelection, inventoryLines])
   
 
   return (
@@ -163,9 +191,23 @@ const InventoriedList = ({refetchAssetInventoryLines, auditData,inventoryLines,o
             height: "calc(100vh - 130px)",
             overflow: "auto"
         }}>
+          <div style={{display:'flex',gap:10,alignItems:'center',marginBottom: filteredData.length === 0 ? 16 : 0}}>
+            <GiSettingsKnobs />
+            <Select
+              style={{flex:1}}
+              onChange={handleChangeValue}
+              defaultValue={chosenSelection}
+              options={[
+                { value: 'all', label: 'Xem tất cả' },
+                { value: 'both_same', label: 'Cùng công ty sở hữu và sử dụng' },
+                { value: 'nay_so_huu_khac_su_dung', label: 'Công ty này sở hữu - Công ty khác sử dụng' },
+                { value: 'nay_su_dung_khac_so_huu', label: 'Công ty khác sở hữu - Công ty này sử dụng' },
+              ]}
+            />
+          </div>
           <Table 
             columns={columns} 
-            dataSource={inventoryLines} 
+            dataSource={filteredData} 
             size='small'
             locale={locale}
             bordered
@@ -173,8 +215,7 @@ const InventoriedList = ({refetchAssetInventoryLines, auditData,inventoryLines,o
             pagination={{ 
               simple:true,
               size:'small',
-              position: ['bottomCenter'],
-              hideOnSinglePage:true,
+              position: ['topCenter'],
               pageSize: 40,
               showTotal:(total, range) => <span style={{fontSize:12}}>{range[0]}-{range[1]} / {total}</span>
             }}

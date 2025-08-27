@@ -7,7 +7,7 @@ import PageLoading from 'widgets/PageLoading';
 import { IoArrowBackSharp } from 'react-icons/io5';
 import Info from './Info';
 import InventoriedList from './InventoriedList';
-import { IAssetInventoriedDept, IAssetInventory, IAudit, ICommitee } from 'interface';
+import { IAssetInventoriedDept, IAssetInventory, IAssetTypeInterface, IAudit, ICommitee } from 'interface';
 import { BsQrCode } from 'react-icons/bs';
 import QRScanner from 'widgets/qr/QRScanner';
 
@@ -20,9 +20,12 @@ const AuditDetail = () => {
 
     const [auditData,setAuditData] = useState<IAudit | null>(null);
     const [commitee,setCommitee] = useState<ICommitee[]>([]);
+    const [assetTypes,setAssetTypes] = useState<IAssetTypeInterface[]>([])
     const [inventoriedDept,setInventoriedDept] = useState<IAssetInventoriedDept[]>([]);
     const [inventoryLines,setInventoryLines] = useState<IAssetInventory[]>([]);
     const [isOpen,setOpen] = useState(false);
+    const [isCurrentUserAssigned,setIsCurrentUserAssigned] = useState(false)
+    const [assignedLineId,setAssignedLineId] = useState<Number | null>(null)
 
     const [openEdit,setOpenEdit] = useState<any>(false);
 
@@ -47,6 +50,21 @@ const AuditDetail = () => {
             const {data:{data}} = await app.get(`/api/get-asset-inventory-commitee/${id}`);
             if(data.length > 0){
                 setCommitee(data)
+            }
+        } catch (error) {
+            const message = getErrorMessage(error);
+            alert(message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const handleGetAssetTypes = async () => {
+        try {
+            setLoading(true);
+            const {data:{data}} = await app.get(`/api/get-asset-types`);
+            if(data.length > 0){
+                setAssetTypes(data)
             }
         } catch (error) {
             const message = getErrorMessage(error);
@@ -90,6 +108,20 @@ const AuditDetail = () => {
         }
     }
 
+    const handleCheckIfUserIsAssigned = async () => {
+        try {
+            setLoading(true);
+            const {data:{isAssigned,assignedLineId}} = await app.get(`/api/check-if-user-is-assigned?asset_inventory_id=${id}`);
+            setIsCurrentUserAssigned(isAssigned)
+            setAssignedLineId(assignedLineId)
+        } catch (error) {
+            const message = getErrorMessage(error);
+            alert(message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const handleOpenQrCode = () => {
         setOpen(true);
     }
@@ -98,7 +130,7 @@ const AuditDetail = () => {
         const inventoriedAsset = [...inventoryLines].find(i => (i.asset_id as any)[0].toString() === id.toString())
         if(inventoriedAsset){
             setActive(2);
-            setOpenEdit(inventoriedAsset);
+            setOpenEdit({...inventoriedAsset,opennedByQR:true});
             setOpen(false);
         } else {
             alert("Không tìm thấy tài sản trong danh sách kiểm kê")
@@ -109,7 +141,14 @@ const AuditDetail = () => {
     const handleViewContent = () => {
         switch (active){
             case 1:
-                return <Info auditData = {auditData} commitee={commitee} inventoriedDept={inventoriedDept}/>
+                return <Info 
+                isCurrentUserAssigned = {isCurrentUserAssigned}
+                assignedLineId = {assignedLineId}
+                auditData = {auditData} 
+                commitee={commitee} 
+                inventoriedDept={inventoriedDept} 
+                handleGetData = {handleGetData}
+                assetTypes = {assetTypes}/>
             case 2:
                 return <InventoriedList 
                 refetchAssetInventoryLines = {handleGetAssetInventoryLines}
@@ -126,6 +165,8 @@ const AuditDetail = () => {
             handleGetInventoryCommitte(),
             handleGetInventoriedDept(),
             handleGetAssetInventoryLines(),
+            handleGetAssetTypes(),
+            handleCheckIfUserIsAssigned()
         ])
     }
 
@@ -146,7 +187,7 @@ const AuditDetail = () => {
                     <IoArrowBackSharp style={{margin:0, fontSize:20,color:'white'}} onClick={()=>navigate("/asset/audit",{ replace: true })}/>
                 </div>
                 <h5 style={{margin:0, fontSize:14,color:'white',fontWeight:500}}>Thông tin chi tiết</h5>
-                {inventoryLines.length > 0 && <div style={{display:'flex',justifyContent:'flex-start',position:'absolute',right:20}} onClick={handleOpenQrCode}>
+                {inventoryLines.length > 0 && auditData?.state === 'process' && <div style={{display:'flex',justifyContent:'flex-start',position:'absolute',right:20}} onClick={handleOpenQrCode}>
                     <BsQrCode style={{margin:0, fontSize:20,color:'white'}}/>
                 </div>}
             </header>
