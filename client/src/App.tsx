@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
-import Login from 'pages/login/Login';
-import { useSelector,useDispatch } from 'react-redux';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { RootState } from 'redux/store';
+import { useDispatch } from 'react-redux';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Asset from 'pages/asset/Asset';
 import PrivateRoute from 'PrivateRoute';
 import { addAuth } from './redux/reducers/authReducer.tsx';
@@ -14,6 +12,8 @@ import AuditDetail from 'pages/asset/components/auditDetail/Index.tsx';
 import PageLoading from 'widgets/PageLoading.tsx';
 import NavigateRoute from 'NavigateRoute.tsx';
 import PreRoute from 'PreRoute.tsx';
+import {getOffices} from './redux/reducers/officeReducer'
+import {getDepartments} from './redux/reducers/departmentReducer'
 
 function App() {
   const dispatch = useDispatch();
@@ -25,11 +25,37 @@ function App() {
       const {data}:any = await app.get("/api/check-auth");
       if(data?.data?.length>0){
         dispatch(addAuth(data.data[0]))
+        await handleGetOffices();
+        await handleGetDepartments();
       }
     } catch (error:any) {
       alert(getErrorMessage(error))
     } finally {
       setFetchingData(false);
+    }
+  }
+
+  const handleGetOffices = async () => {
+    try {
+        const {data} = await app.get("/api/get-offices");
+        if(data?.data){
+            dispatch(getOffices(data?.data))
+        }
+    } catch (error:any) {
+        const message = getErrorMessage(error);
+        alert(message);
+    }
+  }
+
+  const handleGetDepartments = async () => {
+    try {
+        const {data} = await app.get("/api/get-departments");
+        if(data?.data){
+            dispatch(getDepartments(data?.data))
+        }
+    } catch (error:any) {
+        const message = getErrorMessage(error);
+        alert(message);
     }
   }
 
