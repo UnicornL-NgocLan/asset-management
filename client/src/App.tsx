@@ -17,7 +17,6 @@ import PreRoute from 'PreRoute.tsx';
 
 function App() {
   const dispatch = useDispatch();
-  const auth = useSelector((state: RootState) => state.auth);
   const [fetchingData,setFetchingData] = useState(false);
   
   const checkAuth = async () => {
