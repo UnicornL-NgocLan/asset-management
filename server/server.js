@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -8,8 +8,6 @@ import bodyParser from "body-parser";
 import morgan from "morgan";
 import router from "./routes/index.js";
 import helmet from "helmet";
-
-
 
 const app = express();
 
@@ -53,7 +51,6 @@ const corsConfig = {
   credentials: true,
 };
 
-
 app.use(cors(corsConfig));
 
 app.use(express.json());
@@ -67,12 +64,12 @@ const URI = process.env.MONGO_URI;
 const start = async () => {
   try {
     await mongoose.connect(URI);
-    console.log("MongoDB connected")
-    app.listen(port, () => {  
+    console.log("MongoDB connected");
+    app.listen(port, () => {
       console.log("Server is listening on port", port);
     });
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
 };
 

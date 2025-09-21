@@ -10,6 +10,21 @@ import PageLoading from 'widgets/PageLoading';
 import { InputNumber } from 'antd';
 import Empty from 'widgets/Empty';
 import _ from 'lodash';
+import "leaflet/dist/leaflet.css";
+import "../../../../../index.css";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+
+import { Icon, divIcon, point } from "leaflet";
+
+// Define a custom icon for the map markers
+const customIcon = new Icon({
+  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+  shadowSize: [41, 41]
+});
 
 const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,auditData}:{handleRefetchInventoryList:()=>void,openEdit:any,setOpenEdit:(i:boolean)=>void,auditData:IAudit}) => {
   const [form] = Form.useForm();
@@ -22,6 +37,7 @@ const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,
   const [assetUser,setAssetUser] = useState('');
   const [canEdit,setCanEdit] = useState(true);
   const [isUpdating,setIsUpdating] = useState(false);
+  const [geoLocation,setGeolocation] = useState<any>(null)
 
 
   const handleGetInventoryLine = async () => {
@@ -68,6 +84,25 @@ const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,
   }
   }
 
+
+  const getCurrentPosition = () => {
+    return new Promise((resolve) => {
+      if (!navigator.geolocation) {
+        resolve(null); // Geolocation not supported
+      } else {
+        navigator.geolocation.getCurrentPosition(
+          (position) => resolve(position),
+          () => resolve(null), // If user denies or error occurs
+          {
+            enableHighAccuracy: true, // yêu cầu vị trí chính xác nhất có thể
+            timeout: 10000,           // timeout 10 giây
+            maximumAge: 0           
+          }
+        );
+      }
+    });
+  };
+
   const onFinish = async () => {
     try {
       setIsUpdating(true)
@@ -75,6 +110,16 @@ const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,
       if(!tt && tt !== 0) return alert("Vui lòng nhập só lượng thực tế");
       if(!_.isNumber(tt)) return alert("Trường số thực tế phải là kiểu số");
       if(tt < 0) return alert("Số thực tế phải lớn hơn 0")
+
+       // Attempt to get geolocation
+      const position:any = await getCurrentPosition();
+      let lat = position?.coords?.latitude ?? null;
+      let lng = position?.coords?.longitude ?? null;
+      if(position?.coords?.accuracy > 100){
+        lat = null;
+        lng = null;
+        alert(`Vị trí có thể không chính xác! Tọa độ hệ thống ghi nhận lệch ${Math.round(position?.coords?.accuracy)}m. Nếu như bạn đang cập nhật kiểm kê bằng trình duyệt thì vui lòng thử lại`)
+      }
 
       const updateData = {
         quantity_thuc_te:tt,
@@ -86,10 +131,13 @@ const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,
         asset_user_temporary:assetUser ? assetUser : null, 
         da_dan_tem:hasStamp,
         is_done:true,
+        inventory_latitude: lat,
+        inventory_longitude:lng
       }
       await app.patch(`/api/update-inventory-line/${openEdit.id}`,updateData);
       handleRefetchInventoryList()
     } catch (error) {
+      console.log(error)
       const message = getErrorMessage(error);
       alert(message);
     } finally {
@@ -100,8 +148,8 @@ const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,
 
   useEffect(()=>{
     if(!inventoryLine) return;
-    const {quantity_thuc_te,note,de_xuat_xu_ly,giai_trinh,latest_inventory_status,status:thuc_trang,da_dan_tem,asset_user_temporary,opennedByQR} = inventoryLine;
-    form.setFieldValue("tt",!quantity_thuc_te && canEdit? inventoryLine.quantity_so_sach : quantity_thuc_te);
+    const {quantity_thuc_te,note,de_xuat_xu_ly,giai_trinh,latest_inventory_status,status:thuc_trang,da_dan_tem,asset_user_temporary,opennedByQR,inventory_latitude,inventory_longitude} = inventoryLine;
+        form.setFieldValue("tt",!quantity_thuc_te && canEdit? 0 : quantity_thuc_te);
         form.setFieldValue("note",note ? note : '');
         form.setFieldValue("dxxl",de_xuat_xu_ly ? de_xuat_xu_ly : '');
         form.setFieldValue("gtdv",giai_trinh ? giai_trinh : '');
@@ -109,6 +157,9 @@ const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,
         setStatus(latest_inventory_status);
         setHasStamp(opennedByQR || da_dan_tem);
         setAssetUser(asset_user_temporary ? asset_user_temporary[0] : '')
+        if(inventory_latitude && inventory_longitude){
+          setGeolocation({inventory_latitude,inventory_longitude})
+        }
   },[inventoryLine]);
 
   useEffect(()=>{
@@ -247,6 +298,18 @@ const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,
                     placeholder="Nhập giải trình của đơn vị" size="middle" style={{fontSize:13,background:myColor.backgroundColor}}/>
                 </Form.Item>
               </div>
+              {geoLocation && 
+              <div style={{paddingTop:10}}>
+                <p style={{margin:0,fontSize:13,fontWeight:600,marginBottom:8}}>Vị trí lần cập nhật giá trị kiểm kê gần nhất</p>   
+                <MapContainer center={[geoLocation?.inventory_latitude, geoLocation?.inventory_longitude]} zoom={17}>
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                      <Marker position={[geoLocation?.inventory_latitude, geoLocation?.inventory_longitude] as [number, number]} icon={customIcon}>
+                      </Marker>
+                </MapContainer>
+              </div>}
               {['draft','process'].some(i => i === auditData.state) && <Form.Item wrapperCol={{ offset: 0, span: 24 }} style={{margin:0,paddingTop:15}}>
                 <Button type="primary" htmlType="submit" size='large' loading = {isUpdating}
                 style = {{background: myColor.buttonColor, width:'100%', marginTop:10, fontSize:14, fontWeight:600}}>

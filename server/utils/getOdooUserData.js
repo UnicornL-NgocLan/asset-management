@@ -139,6 +139,8 @@ export async function getAssetInventoryLines(odoo, id) {
       "de_xuat_xu_ly",
       "giai_trinh",
       "latest_inventory_status",
+      "inventory_latitude",
+      "inventory_longitude",
     ]);
     inParams.push(0);
     const params = [];
@@ -407,7 +409,18 @@ export async function getAssetInventory(odoo, auditId) {
   return new Promise((resolve, reject) => {
     const inParams = [];
     inParams.push([["asset_inventory_id", "=", parseInt(auditId)]]);
-    inParams.push(["id", "asset_id", "quantity_so_sach", "quantity_thuc_te", "status", "is_done", "asset_company_id", "asset_using_company_id"]);
+    inParams.push([
+      "id",
+      "asset_id",
+      "quantity_so_sach",
+      "quantity_thuc_te",
+      "status",
+      "is_done",
+      "asset_company_id",
+      "asset_using_company_id",
+      "inventory_longitude",
+      "inventory_latitude",
+    ]);
     inParams.push(0);
     const params = [];
     params.push(inParams);
@@ -440,6 +453,8 @@ export async function getAssetInventoryLine(odoo, id) {
       "giai_trinh",
       "latest_inventory_status",
       "is_done",
+      "inventory_longitude",
+      "inventory_latitude",
     ]);
     inParams.push(0);
     const params = [];
@@ -523,6 +538,179 @@ export async function changeAssetInventoryFromVerifyingToProcessState(odoo, uid)
         reject(err);
       } else {
         resolve(user);
+      }
+    });
+  });
+}
+
+export async function getDetailAssetInventoryAssetTemporartLine(odoo, id) {
+  return new Promise((resolve, reject) => {
+    const inParams = [];
+    inParams.push([["id", "=", parseInt(id)]]);
+    inParams.push([
+      "id",
+      "code",
+      "description",
+      "name",
+      "asset_company_id",
+      "asset_using_company_id",
+      "asset_uom",
+      "quantity_thuc_te",
+      "latest_inventory_status",
+      "status",
+      "da_dan_tem",
+      "asset_user_temporary",
+      "note",
+      "de_xuat_xu_ly",
+      "giai_trinh",
+      "is_done",
+      "assset_images",
+    ]);
+    inParams.push(0);
+    const params = [];
+    params.push(inParams);
+    odoo.execute_kw("asset.inventory.asset.temporary", "search_read", params, (err, assets) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(assets);
+      }
+    });
+  });
+}
+
+export async function getAssetInventoryAssetTemporartLines(odoo, id) {
+  return new Promise((resolve, reject) => {
+    const inParams = [];
+    inParams.push([["asset_inventory_id", "=", parseInt(id)]]);
+    inParams.push(["id", "code", "name", "description", "quantity_thuc_te", "is_done"]);
+    inParams.push(0);
+    const params = [];
+    params.push(inParams);
+    odoo.execute_kw("asset.inventory.asset.temporary", "search_read", params, (err, assets) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(assets);
+      }
+    });
+  });
+}
+
+export async function getUoms(odoo) {
+  return new Promise((resolve, reject) => {
+    const inParams = [];
+    inParams.push([["active", "=", true]]);
+    inParams.push(["id", "name"]);
+    inParams.push(0);
+    const params = [];
+    params.push(inParams);
+    odoo.execute_kw("uom.uom", "search_read", params, (err, assets) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(assets);
+      }
+    });
+  });
+}
+
+export async function getCompanies(odoo) {
+  return new Promise((resolve, reject) => {
+    const inParams = [];
+    inParams.push([["active", "=", true]]);
+    inParams.push(["id", "name"]);
+    inParams.push(0);
+    const params = [];
+    params.push(inParams);
+    odoo.execute_kw("res.company", "search_read", params, (err, assets) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(assets);
+      }
+    });
+  });
+}
+
+export async function createAssetTemporaryLine(odoo, input) {
+  return new Promise((resolve, reject) => {
+    const inParams = [];
+    inParams.push(input);
+    const params = [];
+    params.push(inParams);
+    odoo.execute_kw("asset.inventory.asset.temporary", "create", params, (err, assets) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(assets);
+      }
+    });
+  });
+}
+
+export async function updateAssetTemporaryLine(odoo, input, id) {
+  return new Promise((resolve, reject) => {
+    const inParams = [];
+    inParams.push([id]); //id to update
+    inParams.push(input);
+    const params = [];
+    params.push(inParams);
+    odoo.execute_kw("asset.inventory.asset.temporary", "write", params, (err, assets) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(assets);
+      }
+    });
+  });
+}
+
+export async function deleteAssetTemporaryLine(odoo, id) {
+  return new Promise((resolve, reject) => {
+    const inParams = [];
+    inParams.push([id]); //id to update
+    const params = [];
+    params.push(inParams);
+    odoo.execute_kw("asset.inventory.asset.temporary", "unlink", params, (err, assets) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(assets);
+      }
+    });
+  });
+}
+
+export async function createAssetTemporaryImgLine(odoo, input) {
+  return new Promise((resolve, reject) => {
+    const inParams = [];
+    inParams.push(input);
+    const params = [];
+    params.push(inParams);
+    odoo.execute_kw("account.asset.image", "create", params, (err, assets) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(assets);
+      }
+    });
+  });
+}
+
+export async function getAccountAssetImages(odoo, id) {
+  return new Promise((resolve, reject) => {
+    const inParams = [];
+    inParams.push([["asset_temporary_id", "=", parseInt(id)]]);
+    inParams.push([]);
+    inParams.push(0);
+    const params = [];
+    params.push(inParams);
+    odoo.execute_kw("account.asset.image", "search_read", params, (err, assets) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(assets);
       }
     });
   });

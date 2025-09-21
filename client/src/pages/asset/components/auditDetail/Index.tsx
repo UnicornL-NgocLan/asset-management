@@ -7,9 +7,10 @@ import PageLoading from 'widgets/PageLoading';
 import { IoArrowBackSharp } from 'react-icons/io5';
 import Info from './Info';
 import InventoriedList from './InventoriedList';
-import { IAssetInventoriedDept, IAssetInventory, IAssetTypeInterface, IAudit, ICommitee } from 'interface';
+import { IAssetInventoriedDept, IAssetInventory, IAssetInventoryAssetTemporary, IAssetTypeInterface, IAudit, ICommitee } from 'interface';
 import { BsQrCode } from 'react-icons/bs';
 import QRScanner from 'widgets/qr/QRScanner';
+import TemporaryList from './TemporaryList';
 
 const AuditDetail = () => {
     const {id} = useParams();
@@ -23,6 +24,7 @@ const AuditDetail = () => {
     const [assetTypes,setAssetTypes] = useState<IAssetTypeInterface[]>([])
     const [inventoriedDept,setInventoriedDept] = useState<IAssetInventoriedDept[]>([]);
     const [inventoryLines,setInventoryLines] = useState<IAssetInventory[]>([]);
+    const [inventoryTemporaryLines,setInventoryTemporaryLines] = useState<IAssetInventoryAssetTemporary[]>([])
     const [isOpen,setOpen] = useState(false);
     const [isCurrentUserAssigned,setIsCurrentUserAssigned] = useState(false)
     const [assignedLineId,setAssignedLineId] = useState<Number | null>(null)
@@ -137,6 +139,27 @@ const AuditDetail = () => {
         }
     }
 
+    const handleGetAssetInventoryAssetTemporaryLines = async (noLoading?:boolean) => {
+        try {
+            if(noLoading){
+                setLoading(false);
+            } else {
+                setLoading(true);
+            }
+            const {data:{data}} = await app.get(`/api/get-asset-inventory-asset-temporary-lines/${id}`);
+            if(data.length > 0){
+                setInventoryTemporaryLines(data)
+            }else{
+                setInventoryTemporaryLines([])
+            }
+        } catch (error) {
+            const message = getErrorMessage(error);
+            alert(message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
 
     const handleViewContent = () => {
         switch (active){
@@ -154,6 +177,11 @@ const AuditDetail = () => {
                 refetchAssetInventoryLines = {handleGetAssetInventoryLines}
                 auditData = {auditData} inventoryLines={inventoryLines} 
                 setOpenEdit={setOpenEdit} openEdit={openEdit}/>
+            case 3:
+                return <TemporaryList
+                refetchAssetInventoryLines={handleGetAssetInventoryAssetTemporaryLines}
+                auditData={auditData}
+                inventoryLines={inventoryTemporaryLines}/>
             default:
                 return <></>
         }
@@ -166,7 +194,8 @@ const AuditDetail = () => {
             handleGetInventoriedDept(),
             handleGetAssetInventoryLines(),
             handleGetAssetTypes(),
-            handleCheckIfUserIsAssigned()
+            handleCheckIfUserIsAssigned(),
+            handleGetAssetInventoryAssetTemporaryLines()
         ])
     }
 
@@ -203,6 +232,11 @@ const AuditDetail = () => {
                     <span style={{
                         fontWeight: `${active === 2 ? '700': '500'}`,
                         fontSize:13, color:`${active===2 ? myColor.buttonColor : "grey"}`}}>Danh sách kiểm kê</span>
+                </div>
+                <div onClick={()=>setActive(3)} style={{flex:1,display:'flex',justifyContent:'center'}}>
+                    <span style={{
+                        fontWeight: `${active === 3 ? '700': '500'}`,
+                        fontSize:13, color:`${active===3 ? myColor.buttonColor : "grey"}`}}>Phát sinh</span>
                 </div>
             </div>
         </div>

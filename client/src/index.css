@@ -24,3 +24,9 @@ code {
 .ant-select-selection-item{
   font-size: 13px;
 }
+
+/* height of the container */
+.leaflet-container {
+  height: 250px;
+  width: 100%;
+}

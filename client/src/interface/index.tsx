@@ -62,5 +62,14 @@ export interface IAssetInventory {
     is_done:boolean,
     asset_using_company_id: any[],
     asset_company_id: any[]
+}
 
+
+export interface IAssetInventoryAssetTemporary {
+    id:number,
+    code:string,
+    name:string,
+    description:string,
+    quantity_thuc_te:number,
+    is_done:boolean,
 }

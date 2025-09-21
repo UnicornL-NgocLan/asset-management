@@ -305,7 +305,7 @@ const Info = ({isCurrentUserAssigned,assignedLineId,assetTypes,auditData,commite
                     size='large' 
                     loading={isProcessing}
                     disabled = {isProcessing}
-                    style={{background:"#0D7C66", padding:16,textAlign:'center',fontWeight:500,color:'white',marginTop: 16,width:'100%'}}>
+                    style={{background:"#0D7C66", padding:16,textAlign:'center',fontWeight:500,color:'white',marginTop: 16,width:'100%',fontSize:13}}>
                     Xác nhận kết quả
                 </Button>
                 :
@@ -316,7 +316,7 @@ const Info = ({isCurrentUserAssigned,assignedLineId,assetTypes,auditData,commite
                     size='large' 
                     loading={isProcessing}
                     disabled = {isProcessing}
-                    style={{background:"#EE4E4E", padding:16,textAlign:'center',fontWeight:500,color:'white',marginTop: 16,width:'100%'}}>
+                    style={{background:"#EE4E4E", padding:16,textAlign:'center',fontWeight:500,color:'white',marginTop: 16,width:'100%',fontSize:13}}>
                     Hủy bỏ xác nhận
                 </Button>
                 :
@@ -332,7 +332,7 @@ const Info = ({isCurrentUserAssigned,assignedLineId,assetTypes,auditData,commite
                 size='large'
                 onClick={handleGenerateQRCode} 
                 disabled = {isProcessing}
-                style={{background:myColor.buttonColor, padding:16,textAlign:'center',fontWeight:500,color:'white',marginTop: 16,width:'100%',fontSize:16}}>
+                style={{background:myColor.buttonColor, padding:16,textAlign:'center',fontWeight:500,color:'white',marginTop: 16,width:'100%',fontSize:13}}>
                 Tạo QR Code xác nhận
             </Button>
         }
@@ -344,7 +344,7 @@ const Info = ({isCurrentUserAssigned,assignedLineId,assetTypes,auditData,commite
                 size='large'
                 onClick={handleChangeToVerifyState} 
                 disabled = {isProcessing}
-                style={{background:myColor.buttonColor, padding:16,textAlign:'center',fontWeight:500,color:'white',marginTop: 16,width:'100%',fontSize:16}}>
+                style={{background:myColor.buttonColor, padding:16,textAlign:'center',fontWeight:500,color:'white',marginTop: 16,width:'100%',fontSize:13}}>
                 Chuyển sang giai đoạn xác nhận
             </Button>
         }
@@ -356,7 +356,7 @@ const Info = ({isCurrentUserAssigned,assignedLineId,assetTypes,auditData,commite
                 size='large'
                 onClick={handleBackToProcessState} 
                 disabled = {isProcessing}
-                style={{background:myColor.buttonColor, padding:16,textAlign:'center',fontWeight:500,color:'white',marginTop: 16,width:'100%',fontSize:16}}>
+                style={{background:myColor.buttonColor, padding:16,textAlign:'center',fontWeight:500,color:'white',marginTop: 16,width:'100%',fontSize:13}}>
                 Quay về giai đoạn kiểm kê
             </Button>
         }

@@ -16,6 +16,14 @@ import {
   setUserUnConfirmAssetInventory,
   changeAssetInventoryFromProcessToVerifyState,
   changeAssetInventoryFromVerifyingToProcessState,
+  getAssetInventoryAssetTemporartLines,
+  getDetailAssetInventoryAssetTemporartLine,
+  getUoms,
+  getCompanies,
+  createAssetTemporaryLine,
+  updateAssetTemporaryLine,
+  deleteAssetTemporaryLine,
+  getAccountAssetImages,
 } from "../utils/getOdooUserData.js";
 
 import { updateInventoryLine } from "../utils/updateOdooUserData.js";
@@ -196,6 +204,71 @@ export const auditCtrl = {
       const { id } = req.params;
       await changeAssetInventoryFromVerifyingToProcessState(req.odoo, id);
       res.status(200).json({ msg: "Đã hoàn tất" });
+    } catch (error) {
+      res.status(500).json({ msg: error.message });
+    }
+  },
+
+  getAssetInventoryAssetTemporaryLines: async (req, res) => {
+    try {
+      const { audit_id } = req.params;
+      const data = await getAssetInventoryAssetTemporartLines(req.odoo, audit_id);
+      res.status(200).json({ data });
+    } catch (error) {
+      res.status(500).json({ msg: error.message });
+    }
+  },
+
+  getAssetInventoryAssetTemporaryLine: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const data = await getDetailAssetInventoryAssetTemporartLine(req.odoo, id);
+      const images = await getAccountAssetImages(req.odoo, id);
+      res.status(200).json({ data, images });
+    } catch (error) {
+      res.status(500).json({ msg: error.message });
+    }
+  },
+
+  getUoms: async (req, res) => {
+    try {
+      const data = await getUoms(req.odoo);
+      res.status(200).json({ data });
+    } catch (error) {
+      res.status(500).json({ msg: error.message });
+    }
+  },
+
+  getCompanies: async (req, res) => {
+    try {
+      const data = await getCompanies(req.odoo);
+      res.status(200).json({ data });
+    } catch (error) {
+      res.status(500).json({ msg: error.message });
+    }
+  },
+  createAssetTemporaryLine: async (req, res) => {
+    try {
+      const data = await createAssetTemporaryLine(req.odoo, req.body);
+      res.status(200).json({ data });
+    } catch (error) {
+      res.status(500).json({ msg: error.message });
+    }
+  },
+
+  updateAssetTemporaryLine: async (req, res) => {
+    try {
+      const data = await updateAssetTemporaryLine(req.odoo, req.body, req.params.id);
+      res.status(200).json({ data });
+    } catch (error) {
+      res.status(500).json({ msg: error.message });
+    }
+  },
+
+  deleteAssetTemporaryLine: async (req, res) => {
+    try {
+      const data = await deleteAssetTemporaryLine(req.odoo, req.params.id);
+      res.status(200).json({ data });
     } catch (error) {
       res.status(500).json({ msg: error.message });
     }
