@@ -30,8 +30,8 @@ const whitelist = [
   "http://103.161.22.196:3030/",
   "https://qlts.seateklab.vn",
   "https://qlts.seateklab.vn/",
-  "http://103.161.22.211:3030/",
-  "http://103.161.22.211:3030",
+  "http://103.161.22.211:3031/",
+  "http://103.161.22.211:3031",
 ];
 
 const isOriginAllowed = (origin) => {
