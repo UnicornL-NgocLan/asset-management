@@ -17,43 +17,21 @@ app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use(helmet());
 
-const whitelist = [
-  "http://localhost:3000",
-  "http://localhost:5000",
-  "http://localhost:3000/",
-  "http://localhost:5000/",
-  "http://localhost:3030",
-  "http://localhost:3030/",
-  "http://103.161.22.196:3030",
-  "http://103.161.22.196:3030/",
-  "http://103.161.22.196:3030",
-  "http://103.161.22.196:3030/",
-  "https://qlts.seateklab.vn",
-  "https://qlts.seateklab.vn/",
-  "http://103.161.22.211:3031/",
-  "http://103.161.22.211:3031",
-];
-
-const isOriginAllowed = (origin) => {
-  if (whitelist.indexOf(origin) !== -1) {
-    return true;
-  }
-  return false;
-};
-
 const corsConfig = {
   origin: function (origin, callback) {
-    if (isOriginAllowed(origin) || !origin) {
+    const whitelist = ["http://localhost:3000", "http://103.161.22.211:3031", "http://103.161.22.211:3030", "https://qlts.seateklab.vn"];
+    if (!origin || whitelist.includes(origin)) {
       callback(null, origin);
     } else {
       callback(new Error("Not allowed by CORS"));
     }
   },
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
   credentials: true,
 };
 
 app.use(cors(corsConfig));
+app.options("*", cors(corsConfig));
 
 app.use(express.json());
 app.use(morgan("tiny"));
