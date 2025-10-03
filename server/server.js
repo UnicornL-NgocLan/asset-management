@@ -53,7 +53,7 @@ const corsConfig = {
   credentials: true,
 };
 
-// app.use(cors(corsConfig));
+app.use(cors(corsConfig));
 
 app.use(express.json());
 app.use(morgan("tiny"));
