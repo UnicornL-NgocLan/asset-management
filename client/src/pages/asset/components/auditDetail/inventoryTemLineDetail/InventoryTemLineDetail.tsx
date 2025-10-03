@@ -139,7 +139,7 @@ const InventoryTemLineDetail = ({
         name,
         code,
         description,
-        asset_uom: uom_id,
+        asset_uom_uom: uom_id,
         quantity_thuc_te: tt,
         asset_using_company_id: company_using,
         asset_company_id: company_owner,
@@ -175,7 +175,7 @@ const InventoryTemLineDetail = ({
       description,
       quantity_thuc_te,
       note,
-      asset_uom,
+      asset_uom_uom,
       de_xuat_xu_ly,
       giai_trinh,
       latest_inventory_status,
@@ -187,12 +187,13 @@ const InventoryTemLineDetail = ({
       asset_company_id,
       images
     } = inventoryLine;
+    console.log(inventoryLine)
     form.setFieldValue("name", name);
     form.setFieldValue("code", code || '');
     form.setFieldValue("description", description || '');
     form.setFieldValue("tt", quantity_thuc_te);
     form.setFieldValue("note", note ? note : "");
-    form.setFieldValue("uom_id", asset_uom ? asset_uom[0] : null);
+    form.setFieldValue("uom_id", asset_uom_uom ? asset_uom_uom[0] : null);
     form.setFieldValue("giai_trinh", giai_trinh ? giai_trinh : "");
     form.setFieldValue("de_xuat_xu_ly", de_xuat_xu_ly ? de_xuat_xu_ly : "");
     form.setFieldValue("company_using", asset_using_company_id ? asset_using_company_id[0] : null);

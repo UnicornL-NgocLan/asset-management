@@ -554,7 +554,7 @@ export async function getDetailAssetInventoryAssetTemporartLine(odoo, id) {
       "name",
       "asset_company_id",
       "asset_using_company_id",
-      "asset_uom",
+      "asset_uom_uom",
       "quantity_thuc_te",
       "latest_inventory_status",
       "status",
