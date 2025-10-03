@@ -4,6 +4,7 @@
       "paths": {
         "utils/*": ["./utils/*"],
         "controllers/*": ["./controllers/*"]
-      }
+      },
+      "ignoreDeprecations": "6.0"
     }
   }

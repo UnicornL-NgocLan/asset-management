@@ -44,7 +44,7 @@ const isOriginAllowed = (origin) => {
 const corsConfig = {
   origin: function (origin, callback) {
     if (isOriginAllowed(origin) || !origin) {
-      callback(null, true);
+      callback(null, origin);
     } else {
       callback(new Error("Not allowed by CORS"));
     }
