@@ -28,6 +28,7 @@ const AuditDetail = () => {
     const [isOpen,setOpen] = useState(false);
     const [isCurrentUserAssigned,setIsCurrentUserAssigned] = useState(false)
     const [assignedLineId,setAssignedLineId] = useState<Number | null>(null)
+    const [myTemporaryId,setMyTemporaryId] = useState<Number | null>(null)
 
     const [openEdit,setOpenEdit] = useState<any>(false);
 
@@ -113,9 +114,10 @@ const AuditDetail = () => {
     const handleCheckIfUserIsAssigned = async () => {
         try {
             setLoading(true);
-            const {data:{isAssigned,assignedLineId}} = await app.get(`/api/check-if-user-is-assigned?asset_inventory_id=${id}`);
+            const {data:{isAssigned,assignedLineId,myTemporaryId}} = await app.get(`/api/check-if-user-is-assigned?asset_inventory_id=${id}`);
             setIsCurrentUserAssigned(isAssigned)
             setAssignedLineId(assignedLineId)
+            setMyTemporaryId(myTemporaryId)
         } catch (error) {
             const message = getErrorMessage(error);
             alert(message);
@@ -168,7 +170,8 @@ const AuditDetail = () => {
                 isCurrentUserAssigned = {isCurrentUserAssigned}
                 assignedLineId = {assignedLineId}
                 auditData = {auditData} 
-                commitee={commitee} 
+                commitee={commitee}
+                myTemporaryId={myTemporaryId}
                 inventoriedDept={inventoriedDept} 
                 handleGetData = {handleGetData}
                 assetTypes = {assetTypes}/>

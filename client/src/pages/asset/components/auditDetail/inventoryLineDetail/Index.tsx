@@ -248,8 +248,10 @@ const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,
                   allowClear
                   style={{ width: '100%'}}
                   value = {assetUser}
-                  filterOption={(input, option) =>
-                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                  filterOption={(input, option) => {
+                    const label = String(option?.label ?? '');
+                    return label.toLowerCase().includes(input.toLowerCase())
+                  }
                   }
                   onChange={(value)=>setAssetUser(value)}
                   options={[...employee].map((item)=>{return {label:item.name,value:item.id}})}
@@ -298,7 +300,7 @@ const InventoryLineDetail = ({ handleRefetchInventoryList, openEdit,setOpenEdit,
                     placeholder="Nhập giải trình của đơn vị" size="middle" style={{fontSize:13,background:myColor.backgroundColor}}/>
                 </Form.Item>
               </div>
-              {geoLocation && 
+              {geoLocation && inventoryLine.is_done &&
               <div style={{paddingTop:10}}>
                 <p style={{margin:0,fontSize:13,fontWeight:600,marginBottom:8}}>Vị trí lần cập nhật giá trị kiểm kê gần nhất</p>   
                 <MapContainer center={[geoLocation?.inventory_latitude, geoLocation?.inventory_longitude]} zoom={17}>

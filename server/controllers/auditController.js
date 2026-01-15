@@ -151,19 +151,21 @@ export const auditCtrl = {
       const isCurrentUserAssigned = listOfAsssigedUserIds.includes(req.user[0].id);
 
       let assignedLineId = null;
+      let currentTemporaryId = null;
       if (isCurrentUserAssigned) {
         const myHrEmployeeId = hrEmployeeContainingUserIdList.find((item) => item.user_id?.[0] === req.user[0].id);
         const myHrEmployeeMultiCompanyId = listOfHrEmployee.find((item) => item.name?.[0] === myHrEmployeeId?.id);
         const myHrEmployeeTemporary = listOfHrTemporary.find((item) => item.employee_id?.[0] === myHrEmployeeMultiCompanyId?.id);
         if (myHrEmployeeTemporary) {
           const myTemporaryId = myHrEmployeeTemporary.id;
+          currentTemporaryId = myTemporaryId;
           assignedLineId =
             commitee.find((item) => item.employee_id_temp?.[0] === myTemporaryId)?.id ||
             inventoriedDept.find((item) => item.employee_id_temp?.[0] === myTemporaryId)?.id ||
             null;
         }
       }
-      res.status(200).json({ isAssigned: isCurrentUserAssigned, assignedLineId });
+      res.status(200).json({ isAssigned: isCurrentUserAssigned, assignedLineId, myTemporaryId: currentTemporaryId });
     } catch (error) {
       res.status(500).json({ msg: error.message });
     }

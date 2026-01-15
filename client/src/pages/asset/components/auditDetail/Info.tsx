@@ -12,10 +12,11 @@ import { getErrorMessage } from 'helpers/getErrorMessage'
 import { useState } from 'react'
 import app from 'axiosConfig'
 
-const Info = ({isCurrentUserAssigned,assignedLineId,assetTypes,auditData,commitee,inventoriedDept,handleGetData}
+const Info = ({isCurrentUserAssigned,assignedLineId,assetTypes,auditData,commitee,inventoriedDept,handleGetData,myTemporaryId}
     :{
         isCurrentUserAssigned:Boolean,
         assignedLineId: Number | null,
+        myTemporaryId: Number | null,
         assetTypes: IAssetTypeInterface[],
         auditData:IAudit | null,
         commitee:ICommitee[],
@@ -240,7 +241,7 @@ const Info = ({isCurrentUserAssigned,assignedLineId,assetTypes,auditData,commite
             <hr/>
             <div>
                 <div>
-                    <p style={{fontSize:12,margin:'0.5rem 0', display:'flex',alignItems:'center', gap:4}}><span style={{fontWeight:500}}>Chưa đưa vào sử dụng:</span> <img alt="" src={auditData.draft_state ? Check : Cross} style={{height:14}}/></p>
+                    {/* <p style={{fontSize:12,margin:'0.5rem 0', display:'flex',alignItems:'center', gap:4}}><span style={{fontWeight:500}}>Chưa đưa vào sử dụng:</span> <img alt="" src={auditData.draft_state ? Check : Cross} style={{height:14}}/></p> */}
                     <p style={{fontSize:12,margin:'0.5rem 0', display:'flex',alignItems:'center', gap:4}}><span style={{fontWeight:500}}>Đang sử dụng:</span> <img alt="" src={auditData.process_state ? Check : Cross} style={{height:14}}/></p>
                     <p style={{fontSize:12,margin:'0.5rem 0', display:'flex',alignItems:'center', gap:4}}><span style={{fontWeight:500}}>Đang chờ thanh lý:</span> <img alt="" src={auditData.pending_state ? Check : Cross} style={{height:14}}/></p>
                 </div>
@@ -298,7 +299,7 @@ const Info = ({isCurrentUserAssigned,assignedLineId,assetTypes,auditData,commite
         {
             auditData?.state === 'verifying' && isCurrentUserAssigned 
             ?
-                [...inventoriedDept,...commitee].find(i => i.assigned_verify && !i.confirm_completed && i.id === assignedLineId)
+                [...inventoriedDept,...commitee].find(i => i.assigned_verify && !i.confirm_completed && i.id === assignedLineId && i.employee_id_temp[0] === myTemporaryId)
                 ?
                 <Button 
                     onClick={handleUserConfirm}
@@ -309,7 +310,7 @@ const Info = ({isCurrentUserAssigned,assignedLineId,assetTypes,auditData,commite
                     Xác nhận kết quả
                 </Button>
                 :
-                [...inventoriedDept,...commitee].find(i => i.assigned_verify && i.confirm_completed && i.id === assignedLineId)
+                [...inventoriedDept,...commitee].find(i => i.assigned_verify && i.confirm_completed && i.id === assignedLineId && i.employee_id_temp[0] === myTemporaryId)
                 ?
                 <Button 
                     onClick={handleUserUnConfirm}

@@ -47,7 +47,7 @@ export interface ICommitee {
 
 export interface IAssetInventoriedDept {
     id:number,
-    employee_id_temp:boolean | [],
+    employee_id_temp:any,
     department:boolean | [],
     confirm_completed:boolean,
     assigned_verify:boolean,
