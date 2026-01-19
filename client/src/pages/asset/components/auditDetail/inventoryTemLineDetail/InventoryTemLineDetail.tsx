@@ -317,7 +317,11 @@ const InventoryTemLineDetail = ({
                   showSearch
                   allowClear
                   style={{ width: "100%" }}
-                  filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
+                  filterOption={(input, option) => {
+                    const label = String(option?.label ?? '');
+                    return label.toLowerCase().includes(input.toLowerCase())
+                  }
+                  }
                   options={[...uoms].map((item) => {
                     return { label: item.name, value: item.id };
                   })}
