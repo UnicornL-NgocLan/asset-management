@@ -406,7 +406,11 @@ const InventoryTemLineDetail = ({
                 allowClear
                 style={{ width: "100%" }}
                 value={assetUser}
-                filterOption={(input, option) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())}
+                filterOption={(input, option) => {
+                    const label = String(option?.label ?? '');
+                    return label.toLowerCase().includes(input.toLowerCase())
+                  }
+                  }
                 onChange={(value) => setAssetUser(value)}
                 options={[...employee].map((item) => {
                   return { label: item.name, value: item.id };
