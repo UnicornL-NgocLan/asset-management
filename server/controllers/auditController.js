@@ -147,6 +147,7 @@ export const auditCtrl = {
       const listOfHrEmployeeMultiCompanyIds = listOfHrTemporary.map((item) => item.employee_id?.[0]);
       const listOfHrEmployee = await getEmployeeMultiCompany(req.odooSeaGroup, listOfHrEmployeeMultiCompanyIds);
       const listOfHrEmployeeIds = listOfHrEmployee.map((item) => item.name[0]);
+      console.log(listOfHrEmployee);
       const hrEmployeeContainingUserIdList = await getUserIdsOfHrEmployee(req.odooSeaGroup, listOfHrEmployeeIds);
       const listOfAsssigedUserIds = hrEmployeeContainingUserIdList.map((item) => item.user_id?.[0]);
       const isCurrentUserAssigned = listOfAsssigedUserIds.includes(req.user[0].id);
