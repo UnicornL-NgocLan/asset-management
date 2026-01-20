@@ -140,7 +140,8 @@ export const auditCtrl = {
       const { asset_inventory_id } = req.query;
       const commitee = await getAssetInventoryCommitee(req.odoo, asset_inventory_id);
       const inventoriedDept = await getAssetInventoriedDept(req.odoo, asset_inventory_id);
-
+      console.log(commitee);
+      console.log(inventoriedDept);
       const listOfAssignedUsers = [...commitee, ...inventoriedDept].map((item) => item.employee_id_temp[0]);
       const listOfHrTemporary = await getHrEmployeeTemporary(req.odoo, listOfAssignedUsers);
       const listOfHrEmployeeMultiCompanyIds = listOfHrTemporary.map((item) => item.employee_id?.[0]);
