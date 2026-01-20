@@ -149,7 +149,8 @@ export const auditCtrl = {
       const hrEmployeeContainingUserIdList = await getUserIdsOfHrEmployee(req.odooSeaGroup, listOfHrEmployeeIds);
       const listOfAsssigedUserIds = hrEmployeeContainingUserIdList.map((item) => item.user_id?.[0]);
       const isCurrentUserAssigned = listOfAsssigedUserIds.includes(req.user[0].id);
-
+      console.log(isCurrentUserAssigned);
+      console.log(listOfAsssigedUserIds);
       let assignedLineId = null;
       let currentTemporaryId = null;
       if (isCurrentUserAssigned) {
