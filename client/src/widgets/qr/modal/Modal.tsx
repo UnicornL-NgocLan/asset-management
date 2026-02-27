@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import Rodal from 'rodal';
 import './Modal.css';
 
@@ -8,9 +8,8 @@ const customStyles = {
   top: '20%',
 };
 
-const Modal = ({ isOpen, title, closeModal, children, footer }:any) => {
-
-  const closeModalHandler = (event:any) => {
+const Modal = ({ isOpen, title, closeModal, children, footer }: any) => {
+  const closeModalHandler = (event: any) => {
     closeModal?.();
   };
 

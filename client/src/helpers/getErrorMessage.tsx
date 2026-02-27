@@ -1,19 +1,30 @@
 export const getErrorMessage = (error: unknown): string => {
-    let message: string;
-  
-    if (error instanceof Error) {
-      // If 'error' is an instance of Error, use its message property.
-      message = (error as any).response?.data?.msg;
-    } else if (typeof error === "object" && error !== null && "response" in error) {
-      // If 'error' is an object with a 'response' property, attempt to extract a 'msg' property from 'response.data'.
-      message = String((error as any).response?.data?.msg || "Có gì đó không ổn");
-    } else if (typeof error === "string") {
-      // If 'error' is a string, use it as is.
-      message = error;
-    } else {
-      // If 'error' doesn't match any of the above cases, use a default message.
-      message = "Có gì đó không ổn";
+  try {
+    // Axios JSON API
+    if ((error as any)?.response?.data?.msg) {
+      let fault = (error as any).response.data.msg;
+      const match = fault.match(/ValidationError:\s*\('([\s\S]*?)',\s*None\)/);
+      if (match && match[1]) {
+        return match[1].replace(/\\n/g, '\n');
+      }
+      return (error as any).response.data.msg;
     }
-  
-    return message;
-  };
+
+    // Generic axios error
+    if ((error as any)?.response?.data) {
+      return JSON.stringify((error as any).response.data);
+    }
+
+    if (error instanceof Error) {
+      return error.message;
+    }
+
+    if (typeof error === 'string') {
+      return error;
+    }
+
+    return 'Có gì đó không ổn';
+  } catch {
+    return 'Có gì đó không ổn';
+  }
+};

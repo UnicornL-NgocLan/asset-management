@@ -1,8 +1,8 @@
 .videoWrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
 .qrVideo {
@@ -14,6 +14,5 @@
 }
 
 .scannedText {
-    word-wrap: break-word;
-  }
-  
+  word-wrap: break-word;
+}

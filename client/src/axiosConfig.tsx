@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 let baseURL = process.env.REACT_APP_SERVER_URI;
-console.log("Base URL check:", baseURL);
+console.log('Base URL check:', baseURL);
 const app = axios.create({
-    baseURL,
-    withCredentials: true, 
-})
+  baseURL,
+  withCredentials: true,
+});
 
-app.interceptors.response.use((response)=>response);
+app.interceptors.response.use((response) => response);
 export default app;

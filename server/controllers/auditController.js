@@ -1,3 +1,4 @@
+import { get } from "mongoose";
 import {
   getAuditList,
   getAudit,
@@ -24,6 +25,7 @@ import {
   updateAssetTemporaryLine,
   deleteAssetTemporaryLine,
   getAccountAssetImages,
+  getdepartmentTemporaryByCompany,
 } from "../utils/getOdooUserData.js";
 
 import { updateInventoryLine } from "../utils/updateOdooUserData.js";
@@ -275,6 +277,16 @@ export const auditCtrl = {
   deleteAssetTemporaryLine: async (req, res) => {
     try {
       const data = await deleteAssetTemporaryLine(req.odoo, req.params.id);
+      res.status(200).json({ data });
+    } catch (error) {
+      res.status(500).json({ msg: error.message });
+    }
+  },
+
+  getDepartmentTemporaies: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const data = await getdepartmentTemporaryByCompany(req.odoo, id);
       res.status(200).json({ data });
     } catch (error) {
       res.status(500).json({ msg: error.message });

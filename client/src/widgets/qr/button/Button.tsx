@@ -1,8 +1,7 @@
-
-const Button = (props:any) => {
+const Button = (props: any) => {
   const { text, onClick } = props;
 
-  const onClickHandler = (event:any) => {
+  const onClickHandler = (event: any) => {
     onClick?.(event);
   };
 

@@ -1,6 +1,6 @@
 .modal {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .modal__header {
@@ -11,10 +11,10 @@
 }
 
 .modal__title {
-    flex-grow: 1;
-    color:white;
-    font-size:14px;
-    font-weight: 400;
+  flex-grow: 1;
+  color: white;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 .modal__content {

@@ -420,6 +420,7 @@ export async function getAssetInventory(odoo, auditId) {
       "asset_using_company_id",
       "inventory_longitude",
       "inventory_latitude",
+      "using_dept",
     ]);
     inParams.push(0);
     const params = [];
@@ -455,6 +456,7 @@ export async function getAssetInventoryLine(odoo, id) {
       "is_done",
       "inventory_longitude",
       "inventory_latitude",
+      "using_dept",
     ]);
     inParams.push(0);
     const params = [];
@@ -707,6 +709,27 @@ export async function getAccountAssetImages(odoo, id) {
     const params = [];
     params.push(inParams);
     odoo.execute_kw("account.asset.image", "search_read", params, (err, assets) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(assets);
+      }
+    });
+  });
+}
+
+export async function getdepartmentTemporaryByCompany(odoo, uid) {
+  return new Promise((resolve, reject) => {
+    const inParams = [];
+    inParams.push([
+      ["active", "=", true],
+      ["company_id", "=", parseInt(uid)],
+    ]);
+    inParams.push(["id", "name", "company_id"]);
+    inParams.push(0);
+    const params = [];
+    params.push(inParams);
+    odoo.execute_kw("hr.department.temporary", "search_read", params, (err, assets) => {
       if (err) {
         reject(err);
       } else {

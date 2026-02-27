@@ -1,9 +1,8 @@
-
 import QrScanner from 'qr-scanner';
 import { useEffect, useRef } from 'react';
-import './Scanner.css'
+import './Scanner.css';
 
-const QRScanner = ({setDecodedText}:any) => {
+const QRScanner = ({ setDecodedText }: any) => {
   const videoElementRef = useRef(null);
 
   useEffect(() => {
@@ -20,15 +19,14 @@ const QRScanner = ({setDecodedText}:any) => {
       }
     );
     qrScanner.start().then(
-        () => {
-        },
-        (error) => {
-            if(error === "Camera not found.") {
-                alert("Quyền truy cập Camera bị chặn. Vui lòng cấp quyền truy cập")
-            } else {
-                alert(error);
-            }
+      () => {},
+      (error) => {
+        if (error === 'Camera not found.') {
+          alert('Quyền truy cập Camera bị chặn. Vui lòng cấp quyền truy cập');
+        } else {
+          alert(error);
         }
+      }
     );
 
     return () => {
@@ -40,7 +38,7 @@ const QRScanner = ({setDecodedText}:any) => {
   return (
     <div>
       <div className="videoWrapper">
-        <video className="qrVideo" ref={videoElementRef}/>
+        <video className="qrVideo" ref={videoElementRef} />
       </div>
     </div>
   );

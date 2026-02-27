@@ -19,6 +19,7 @@ router.get("/get-asset-inventory-asset-temporary-lines/:audit_id", authenticateU
 router.get("/get-asset-inventory-asset-temporary-line/:id", authenticateUser, auditCtrl.getAssetInventoryAssetTemporaryLine);
 router.get("/get-uoms", authenticateUser, auditCtrl.getUoms);
 router.get("/get-companies", authenticateUser, auditCtrl.getCompanies);
+router.get("/get-department-temporary/:id", authenticateUser, auditCtrl.getDepartmentTemporaies);
 
 router.post("/confirm-asset-inventory/:id", authenticateUser, auditCtrl.userConfirmInventory);
 router.post("/unconfirm-asset-inventory/:id", authenticateUser, auditCtrl.userUnConfirmInventory);
