@@ -12,5 +12,6 @@ export const attachCookiesToResponse = ({ res, data }) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sign: true,
+    maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
   });
 };
